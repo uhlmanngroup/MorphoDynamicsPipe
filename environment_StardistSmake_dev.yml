@@ -1,0 +1,42 @@
+# conda version 23.9.0
+# mamba version 1.5.2
+name: StardistSmake0
+channels:
+#  - defaults
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - tensorflow
+  - stardist
+  - matplotlib
+  - napari
+  - pyqt
+  - scikit-image
+  - pims
+  - pandas
+  - numpy
+  - tqdm
+  - pillow
+  - aicsimageio
+  - jupyterlab
+  - notebook
+  - umap-learn
+  - hdbscan
+  - opencv
+  - requests
+  - anndata
+  - scanpy
+  - colour
+  - numba
+  - scanpy
+  - scikit-learn
+  - xlrd
+  - xlwt
+  - jpype1
+  - readlif
+  - openpyxl
+  - jupytext
+  - bioconda::snakemake
+  - pip:
+#    - tensorflow[and-cuda]
