@@ -1,0 +1,13 @@
+# conda version 23.9.0
+# mamba version 1.5.2
+name: Smake0
+channels:
+#  - defaults
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - bioconda::snakemake
+  - conda-lock
+  - pip:
+#    - tensorflow[and-cuda]
