@@ -1,9 +1,16 @@
+files = glob_wildcards("../data/{code}.tif")
+
+rule all:
+    input:
+        expand("results/{code}.npy", code = files.code)
+
+
 rule segment_with_stardist:
     input:
-        "../data/301432316.tif"
+        "../data/{code}.tif"
     output:
-        "results/1.npy"
+        "results/{code}.npy"
     conda:
         "conda_envs_yaml/environment_StardistSmake_dev.yml"
     shell:
-        "python scripts/change_format.py {input} {output}"
+        "python scripts/run_stardist.py {input} {output}"
