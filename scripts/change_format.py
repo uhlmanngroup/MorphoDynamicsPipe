@@ -1,4 +1,4 @@
-#import skimage
+import skimage
 import numpy as np
 import sys
 print ('argument list', sys.argv)
