@@ -1,15 +1,15 @@
-files = glob_wildcards("../data/{code}.tif")
+files = glob_wildcards("../data/{subfolder_filename}.tif")
 
 rule all:
     input:
-        expand("results/{code}.npy", code = files.code)
+        expand("results/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
 
 rule segment_with_stardist:
     input:
-        "../data/{code}.tif"
+        "../data/{subfolder_filename}.tif"
     output:
-        "results/{code}.npy"
+        "results/{subfolder_filename}.tif"
     conda:
         "conda_envs_yaml/environment_StardistSmake_dev.yml"
     shell:
