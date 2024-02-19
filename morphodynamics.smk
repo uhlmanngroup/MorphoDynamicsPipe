@@ -25,3 +25,13 @@ rule segment_with_stardist:
 #    shell:
 #        "python scripts/run_btrack.py {input} {output}"
 #```
+
+rule get_regionprops:
+    input:
+        "2_segmentation/{subfolder_filename}.tif"
+    output:
+        "4_regionprops/{subfolder_filename}.csv"
+    conda:
+        "conda_envs_yaml/environment_StardistSmake_dev.yml"
+    shell:
+        "python scripts/get_regionprops.py {input} {output}"
