@@ -2,7 +2,7 @@ files = glob_wildcards("1_data/{subfolder_filename}.tif")
 
 rule all:
     input:
-        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("4_regionprops/{subfolder_filename}.csv", subfolder_filename = files.subfolder_filename)
 
 rule segment_with_stardist:
     input:
