@@ -1,4 +1,7 @@
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
+both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
+both.subfolder
+both.filename
 
 rule all:
     input:
@@ -17,14 +20,18 @@ rule segment_with_stardist:
 
 #rule track_with_btrack:
 #    input:
-#        "../data/{subfolder_filename}.tif"
+#        "../data/{subfolder}
+#        expand("../data/{subfolder}/{{file}}.tif", subfolder = both.subfolder)
+# double curly brackets use by different rules
 #    output:
-#        "results/{subfolder_filename}.tif"
+#        expand("results/{subfolder_filename}.tif", subfold
+# if output is directory only then it needs to be wrapped in directory only
 #    conda:
 #        "conda_envs_yaml/environment_BtrackSmake_dev.yml"
-#    shell:
-#        "python scripts/run_btrack.py {input} {output}"
-#```
+#    script:
+#        scripts/run_btrack.py
+# snakemake.input
+#
 
 rule get_regionprops:
     input:
