@@ -1,5 +1,5 @@
-# conda version 23.9.0
-# mamba version 1.5.2
+# conda version 24.1.2
+# mamba version 1.5.7
 name: morphody8
 channels:
 #  - defaults
