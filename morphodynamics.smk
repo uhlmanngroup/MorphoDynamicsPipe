@@ -5,7 +5,7 @@ both.filename
 
 rule all:
     input:
-        expand("3_tracking/{subfolder}/output.npy", subfolder = both.subfolder)
+        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
 #rule segment_with_stardist:
 #    input:
@@ -46,8 +46,8 @@ rule all:
 def get_subfolder_files_list(wildcards):
 #    this = os.listdir("1_data/" + both.subfolder)
     this_root_sub = "1_data/" + wildcards.subfolder
-    this2 = [this_root_sub + '/' + each for each in os.listdir(this_root_sub )]
-    print('this is in the snakemake function')
+    this2 = [this_root_sub + '/' + each for each in os.listdir(this_root_sub)]
+    print('this is in the snakemake function 1')
     print(this2)
     return this2
 
@@ -56,7 +56,7 @@ rule test_multiple_inputs_to_one_output:
         get_subfolder_files_list
 #        os.listdir("1_data/{subfolder}".format(subfolder = subfolder) for subfolder in both.subfolder)
     output:
-        "3_tracking_info/{subfolder}/output.npy"
+        "3a_tracking_info/{subfolder}/output.npy"
 #    conda:
 #        "conda_envs_yaml/environment_StardistSmake_dev.yml"
 #    shell:
@@ -65,4 +65,19 @@ rule test_multiple_inputs_to_one_output:
     script:
         "scripts/multiple_inputs_one_output.py"
 
+def get_tracking_info_from_subfolderfilename(wildcards):
+    subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
+    tracking_info = '3a_tracking_info/' + subfolder + '/output.npy'
+    print('this is in the snakemake function 2')
+    print(tracking_info)
+    return tracking_info
 
+
+rule test_different_inputs:
+    input:
+        "1_data/{subfolder_filename}.tif",
+        get_tracking_info_from_subfolderfilename,
+    output:
+        "3b_tracking_images/{subfolder_filename}.tif"
+    script:
+        "scripts/different_inputs.py"
