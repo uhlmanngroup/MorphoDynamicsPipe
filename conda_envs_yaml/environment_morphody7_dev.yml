@@ -1,0 +1,55 @@
+# conda version 23.9.0
+# mamba version 1.5.2
+name: morphody7
+channels:
+#  - defaults
+  - conda-forge
+dependencies:
+  - python
+  - pip
+
+  - aicsimageio
+  - anndata
+  - bioconda::snakemake
+  - btrack
+  - colour
+  - hdbscan
+  - ipywidgets
+  - jpype1
+  - jupyterlab
+  - jupytext
+  - matplotlib
+  - napari
+  - napari-aicsimageio
+  - napari-bioformats
+  - notebook
+  - numba
+  - numpy
+  - opencv
+  - openpyxl
+  - pandas
+  - pillow
+  - pims
+  - pyqt
+  - pytables
+  - readlif
+  - requests
+  - scanpy
+  - scikit-image
+  - scikit-learn
+  - stardist
+  - tensorflow
+  - tqdm
+  - umap-learn
+  - xlrd
+  - xmltodict
+  - xlwt
+
+#lxml
+# - urllib3=2.0.7 #this is the version that morphodynamics tries to install, replacing another one if not specified
+  - pip:
+#    - tensorflow[and-cuda]
+#    - morphodynamics
+#    - git+https://github.com/guiwitz/napari-morphodynamics.git
+#    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
+    - aicspylibczi
