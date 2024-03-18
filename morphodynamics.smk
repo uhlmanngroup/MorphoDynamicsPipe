@@ -18,8 +18,9 @@ rule segment_with_stardist:
 
 
 def get_subfolder_files_list(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "2_segmentation/" + wildcards.subfolder
-    list_of_segmented_images = [this_root_sub + '/' + each for each in os.listdir(this_root_sub)]
+    list_of_segmented_images = [this_root_sub + '/' + each for each in os.listdir(this_original_sub)]
     print('this is in the snakemake function 1')
     print(list_of_segmented_images)
     return list_of_segmented_images
