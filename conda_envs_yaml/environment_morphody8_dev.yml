@@ -1,6 +1,6 @@
 # conda version 23.9.0
 # mamba version 1.5.2
-name: morphody7
+name: morphody8
 channels:
 #  - defaults
   - conda-forge
@@ -14,6 +14,7 @@ dependencies:
   - btrack
   - colour
   - hdbscan
+  - imbalanced-learn
   - ipywidgets
   - jpype1
   - jupyterlab
