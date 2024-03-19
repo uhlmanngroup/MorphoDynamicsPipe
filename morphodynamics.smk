@@ -1,3 +1,5 @@
+import os
+import natsort
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
@@ -5,7 +7,8 @@ both.filename
 
 rule all:
     input:
-        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+#        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("4_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 rule segment_with_stardist:
     input:
@@ -20,7 +23,7 @@ rule segment_with_stardist:
 def get_subfolder_files_list(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "2_segmentation/" + wildcards.subfolder
-    list_of_segmented_images = [this_root_sub + '/' + each for each in os.listdir(this_original_sub)]
+    list_of_segmented_images = [this_root_sub + '/' + each for each in natsort.natsorted(os.listdir(this_original_sub))]
     print('this is in the snakemake function 1')
     print(list_of_segmented_images)
     return list_of_segmented_images
@@ -49,6 +52,24 @@ rule convert_btrack_info_to_images:
         "3b_tracking_images/{subfolder_filename}.tif"
     script:
         "scripts/convert_btrack_info_to_images.py"
+
+
+def get_segmentation_relabeled_list(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
+    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
+    list_of_segmented_images = [this_root_sub + '/' + each for each in natsort.natsorted(os.listdir(this_original_sub))]
+    print('this is in the snakemake function 3')
+    print(list_of_segmented_images)
+    return list_of_segmented_images
+
+rule extract_cell_morphodynamics:
+    input:
+        "3a_tracking_info/{subfolder}/track_info.npy",
+        get_segmentation_relabeled_list,
+    output:
+        "4_cell_morphodynamics/{subfolder}/cell_data.csv"
+    script:
+        "scripts/extract_cell_morphodynamics.py"
 
 
 #rule get_regionprops:

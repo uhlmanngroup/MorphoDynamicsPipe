@@ -28,7 +28,7 @@ this_output = snakemake.output[0]
 
 segmentation_files = list(snakemake.input)
 segmentation = np.array([skimage.io.imread(each) for each in segmentation_files])
-print(segmentation.shape)
+#print(segmentation.shape)
 
 objects = btrack.utils.segmentation_to_objects(
   segmentation, properties=('area', )
@@ -43,7 +43,7 @@ with btrack.BayesianTracker() as tracker:
     tracker.append(objects)
 
   # set the volume (Z axis volume limits default to [-1e5, 1e5] for 2D data)
-    tracker.volume = ((0, 1200), (0, 1600))
+    tracker.volume = ((0, segmentation.shape[1]), (0, segmentation.shape[2]))
 
   # track them (in interactive mode)
 #  tracker.track_interactive(step_size=100)
