@@ -29,26 +29,26 @@ rule track_with_btrack:
     input:
         get_subfolder_files_list
     output:
-        "3a_tracking_info/{subfolder}/output.npy"
+        "3a_tracking_info/{subfolder}/track_info.npy"
     script:
-        "scripts/multiple_inputs_one_output.py"
+        "scripts/run_btrack_to_info.py"
 
 
 def get_tracking_info_from_subfolderfilename(wildcards):
     subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
-    tracking_info = '3a_tracking_info/' + subfolder + '/output.npy'
+    tracking_info = '3a_tracking_info/' + subfolder + '/track_info.npy'
     print('this is in the snakemake function 2')
     print(tracking_info)
     return tracking_info
 
-rule convert_btrack_to_images:
+rule convert_btrack_info_to_images:
     input:
         "2_segmentation/{subfolder_filename}.tif",
         get_tracking_info_from_subfolderfilename,
     output:
         "3b_tracking_images/{subfolder_filename}.tif"
     script:
-        "scripts/different_inputs.py"
+        "scripts/convert_btrack_info_to_images.py"
 
 
 #rule get_regionprops:
