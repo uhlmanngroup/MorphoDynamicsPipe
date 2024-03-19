@@ -1,6 +1,6 @@
 # conda version 24.1.2
 # mamba version 1.5.7
-name: morphody8
+name: morphody9
 channels:
 #  - defaults
   - conda-forge
@@ -22,7 +22,6 @@ dependencies:
   - matplotlib
   - napari
   - napari-aicsimageio
-  - napari-bioformats
   - notebook
   - numba
   - numpy
