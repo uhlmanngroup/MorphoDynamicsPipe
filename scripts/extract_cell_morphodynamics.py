@@ -22,8 +22,9 @@ def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=
 this_input = list(snakemake.input)
 this_output = snakemake.output[0]
 
-tracking_info = this_input[0]
+data_name = this_input[0]
 segmentation_relabeled_names = this_input[1:]
+image_names = [each.replace('3b_tracking_images', '1_data') for each in segmentation_relabeled_names]
 cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
                                    'cycleTime', ending='/', mydtype=int)
 
@@ -32,37 +33,69 @@ cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0],
 
 #print("this_output is in the python file for different inputs ", this_output)
 
-data = np.load(tracking_info)
-seg_relabeled = np.array([skimage.io.imread(each) for each in segmentation_relabeled_names])
-unique_ids = np.unique(data[:,0])
+data = pd.read_csv(data_name, index_col=(0))
+data.sort_values(['cellID', 'frame_id_T'], inplace=True)
+
+#seg_relabeled = np.array([skimage.io.imread(each) for each in seg_relabeled_names])
+#images = np.array([skimage.io.imread(each) for each in image_names])
+
+unique_cell_ids = np.unique(data.index.get_level_values(0))
 
 def speeds_weighted(this_cell_data, cycleTime):
+    speed_summaries = {}
     speeds = []
-    for i in range(len(this_cell_data) - 1):
-        displacement = this_cell_data[i+1, 2:4] - this_cell_data[i, 2:4]
-        dist = np.linalg.norm(displacement)
-        time_steps = this_cell_data[i+1, 1] - this_cell_data[i, 1]
-        speeds += [dist/(time_steps*cycleTime)]*int(time_steps)
-        mean_speed = np.mean(speeds)
-        stdev_speed = np.std(speeds)
-        min_speed = np.min(speeds)
-        max_speed = np.max(speeds)
-        median_speed = np.median(speeds)
-        iqr_speed = scipy.stats.iqr(speeds)
-    return mean_speed, stdev_speed, min_speed, max_speed, median_speed, iqr_speed
+    myfuncs = [np.mean, np.std, np.min, np.max, np.median, scipy.stats.iqr]
+    this_cell_data_np = this_cell_data[['frame_id_T', 'centroid-0', 'centroid-1']].to_numpy()
+    try:
+        for i in range(len(this_cell_data_np) - 1):
+            displacement = this_cell_data_np[i+1, 1:3] - this_cell_data_np[i, 1:3]
+            dist = np.linalg.norm(displacement)
+            time_steps = this_cell_data_np[i+1, 0] - this_cell_data_np[i, 0]
+            speeds += [dist/(time_steps*cycleTime)]*int(time_steps)
+            for each_func in myfuncs:
+                speed_summaries['speed_' + each_func.__name__] = each_func(speeds)
+        if len(speed_summaries.keys()) == 0:
+            for each_func in myfuncs:
+                speed_summaries['speed_' + each_func.__name__] = -1
+    except:
+        for each_func in myfuncs:
+            speed_summaries['speed_' + each_func.__name__] = -1
+    return speed_summaries
 
 def time_span_properties(this_cell_data, cycleTime):
-    start_frame = int(np.min(this_cell_data[:,1]))
-    end_frame = int(np.max(this_cell_data[:,1]))
-    N_separate_frames = len(this_cell_data)
-    N_time_span_frames = end_frame - start_frame
-    time_span = N_time_span_frames*cycleTime
-    return start_frame, end_frame, N_separate_frames, N_time_span_frames, time_span
+    dict_time_span_properties = {}
+    if np.any(this_cell_data['frame_id_T'] == -1):
+        dict_time_span_properties['start_frame'] = -1
+        dict_time_span_properties['end_frame'] = -1
+        dict_time_span_properties['N_separate_frames'] = -1
+        dict_time_span_properties['N_time_span_frames'] = -1
+        dict_time_span_properties['time_span'] = -1
+    else:
+        try:
+            dict_time_span_properties['start_frame'] = int(np.min(this_cell_data['frame_id_T']))
+            dict_time_span_properties['end_frame'] = int(np.max(this_cell_data['frame_id_T']))
+            dict_time_span_properties['N_separate_frames'] = len(this_cell_data)
+            dict_time_span_properties['N_time_span_frames'] = \
+            dict_time_span_properties['end_frame'] - dict_time_span_properties['start_frame']
+            dict_time_span_properties['N_missing_frames'] = \
+            dict_time_span_properties['N_time_span_frames'] - dict_time_span_properties['N_separate_frames'] + 1 
+            dict_time_span_properties['time_span'] = \
+            dict_time_span_properties['N_time_span_frames'] * cycleTime
+        except:
+            dict_time_span_properties['start_frame'] = -1
+            dict_time_span_properties['end_frame'] = -1
+            dict_time_span_properties['N_separate_frames'] = -1
+            dict_time_span_properties['N_time_span_frames'] = -1
+            dict_time_span_properties['N_missing_frames'] = -1
+            dict_time_span_properties['time_span'] = -1            
+            
+    return dict_time_span_properties
 
 def get_area_from_segmentation(this_cell_seg):
+    '''This just produces the same as regionprops so is not included
+    '''
     myareas = np.sum(this_cell_seg, axis=(1,2))
     myareas_non_zero = [each for each in myareas if each != 0]
-    
     try:
         mean_area = np.mean(myareas_non_zero)
         stdev_area = np.std(myareas_non_zero)
@@ -74,53 +107,44 @@ def get_area_from_segmentation(this_cell_seg):
         return mean_area, stdev_area, min_area, max_area, median_area, iqr_area
     except:
         return -1, -1, -1, -1, -1, -1
+    
+def get_summary_statistics(this_cell_data):
+    columns = list(this_cell_data.columns)
+    for each_remove in ['frame_id_T', 'realTime', 'frame_shape0', 'frame_shape1']:
+        columns.remove(each_remove)
+    summary_stats = {}
+    for each_col in columns:
+        for function in [np.mean, np.std, np.min, np.max, np.median, scipy.stats.iqr]:
+            try:
+                if np.any(this_cell_data[each_col] == -1):
+                    summary_stats[each_col + '_' + function.__name__] = -1
+                else:
+                    summary_stats[each_col + '_' + function.__name__] = function(this_cell_data[each_col])
+            except:
+                summary_stats[each_col + '_' + function.__name__] = -1
+    return summary_stats
+
 
 list_cell_properties = []
 
-for this_id in unique_ids:
-    this_cell_data = data[data[:,0] == this_id]
+for this_cell_id in unique_cell_ids:
+    this_cell_data= data.loc[data.index == this_cell_id]
     
-    if len(this_cell_data) <= 1:
-        continue
- #   print(this_cell_data)
+    this_cell_properties = {'cellId':int(this_cell_id)}
+    this_cell_properties.update(time_span_properties(this_cell_data, cycleTime))
+    this_cell_properties.update(get_summary_statistics(this_cell_data))
+    this_cell_properties.update(speeds_weighted(this_cell_data, cycleTime))
     
-    this_cell_properties = {'id':int(this_id)}
-    
-    start_frame, end_frame, N_separate_frames,\
-    N_time_span_frames, time_span = time_span_properties(this_cell_data, cycleTime)
-    this_cell_properties['start_frame'] = start_frame
-    this_cell_properties['end_frame'] = end_frame
-    this_cell_properties['N_separate_frames'] = N_separate_frames
-    this_cell_properties['N_time_span_frames'] = N_time_span_frames
-    this_cell_properties['time_span'] = time_span
-    
-    mean_speed, stdev_speed, min_speed,\
-    max_speed, median_speed, iqr_speed = speeds_weighted(this_cell_data, cycleTime)
-    this_cell_properties['mean_speed'] = mean_speed
-    this_cell_properties['stdev_speed'] = stdev_speed
-    this_cell_properties['min_speed'] = min_speed
-    this_cell_properties['max_speed'] = max_speed
-    this_cell_properties['median_speed'] = median_speed
-    this_cell_properties['iqr_speed'] = iqr_speed
-    
-    this_cell_seg = seg_relabeled == this_id
-    
-    mean_area, stdev_area, min_area, \
-    max_area, median_area, iqr_area = get_area_from_segmentation(this_cell_seg)
-    this_cell_properties['mean_area'] = mean_area
-    this_cell_properties['stdev_area'] = stdev_area
-    this_cell_properties['min_area'] = min_area
-    this_cell_properties['max_area'] = max_area
-    this_cell_properties['median_area'] = median_area
-    this_cell_properties['iqr_area'] = iqr_area
-    
+    #this is the XYT mask of the cell in the segmentation images
+#    this_cell_seg = seg_relabeled == int(this_cell_id)
+#    this_cell_images = images*this_cell_seg
 
     list_cell_properties.append(this_cell_properties)
     
- #   if this_id == 4:
- #       break
+#    if this_cell_id == 4:
+#        break
 
-#pd.DataFrame([1]).to_csv(this_output)
+
 df = pd.DataFrame(list_cell_properties)
-df.set_index('id', drop=True, inplace=True)
+df.set_index('cellId', drop=True, inplace=True)
 df.to_csv(this_output)

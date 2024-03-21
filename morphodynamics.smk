@@ -8,7 +8,10 @@ both.filename
 rule all:
     input:
 #        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
-        expand("4_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
+        expand("4b_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
+
+####################################################################################################
+# Segmentation
 
 rule segment_with_stardist:
     input:
@@ -19,18 +22,20 @@ rule segment_with_stardist:
     shell:
         "python scripts/run_stardist.py {input} {output}"
 
+####################################################################################################
+# Tracking
 
-def get_subfolder_files_list(wildcards):
+def get_segmentation_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "2_segmentation/" + wildcards.subfolder
-    list_of_segmented_images = [this_root_sub + '/' + each for each in natsort.natsorted(os.listdir(this_original_sub))]
-    print('this is in the snakemake function 1')
-    print(list_of_segmented_images)
+    list_of_segmented_images = [os.path.join(this_root_sub, each) for 
+        each in natsort.natsorted(os.listdir(this_original_sub))]
     return list_of_segmented_images
+
 
 rule track_with_btrack:
     input:
-        get_subfolder_files_list
+        get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
     script:
@@ -39,9 +44,7 @@ rule track_with_btrack:
 
 def get_tracking_info_from_subfolderfilename(wildcards):
     subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
-    tracking_info = '3a_tracking_info/' + subfolder + '/track_info.npy'
-    print('this is in the snakemake function 2')
-    print(tracking_info)
+    tracking_info = os.path.join('3a_tracking_info', subfolder, 'track_info.npy')
     return tracking_info
 
 rule convert_btrack_info_to_images:
@@ -53,35 +56,31 @@ rule convert_btrack_info_to_images:
     script:
         "scripts/convert_btrack_info_to_images.py"
 
+####################################################################################################
+# Cell Morphodynamics
 
-def get_segmentation_relabeled_list(wildcards):
+def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "3b_tracking_images/" + wildcards.subfolder
-    list_of_segmented_images = [this_root_sub + '/' + each for each in natsort.natsorted(os.listdir(this_original_sub))]
-    print('this is in the snakemake function 3')
-    print(list_of_segmented_images)
+    list_of_segmented_images = [os.path.join(this_root_sub, each)
+        for each in natsort.natsorted(os.listdir(this_original_sub))]
     return list_of_segmented_images
+
+rule extract_cell_morphology:
+    input:
+        "3a_tracking_info/{subfolder}/track_info.npy",
+        get_segmentation_relabeled_files_list_from_subfolder,
+    output:
+        "4a_cell_morphology/{subfolder}/cell_data.csv"
+    script:
+        "scripts/extract_cell_morphology.py"
+
 
 rule extract_cell_morphodynamics:
     input:
-        "3a_tracking_info/{subfolder}/track_info.npy",
-        get_segmentation_relabeled_list,
+        "4a_cell_morphology/{subfolder}/cell_data.csv",
+        get_segmentation_relabeled_files_list_from_subfolder,
     output:
-        "4_cell_morphodynamics/{subfolder}/cell_data.csv"
+        "4b_cell_morphodynamics/{subfolder}/cell_data.csv"
     script:
         "scripts/extract_cell_morphodynamics.py"
-
-
-#rule get_regionprops:
-#    input:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    output:
-#        "4_regionprops/{subfolder_filename}.csv"
-#    conda:
-#        "conda_envs_yaml/environment_StardistSmake_dev.yml"
-#    shell:
-#        "python scripts/get_regionprops.py {input} {output}"
-
-#    shell:
-#        "python scripts/multiple_inputs.py {input} {output}"
-# I think you could also use shell here if you parse the list thing into a space separated string or something
