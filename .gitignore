@@ -175,3 +175,6 @@ testing.ipynb
 testing*
 4a_cell_morphology/
 4b_cell_morphodynamics/
+scripts/testing*
+4a_instantaneous_cell_morphodynamics/
+4b_time_averaged_cell_morphodynamics/

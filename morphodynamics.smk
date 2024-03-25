@@ -8,7 +8,7 @@ both.filename
 rule all:
     input:
 #        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
-        expand("4b_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 ####################################################################################################
 # Segmentation
@@ -66,21 +66,21 @@ def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
         for each in natsort.natsorted(os.listdir(this_original_sub))]
     return list_of_segmented_images
 
-rule extract_cell_morphology:
+rule extract_instantaneous_cell_morphodynamics:
     input:
         "3a_tracking_info/{subfolder}/track_info.npy",
         get_segmentation_relabeled_files_list_from_subfolder,
     output:
-        "4a_cell_morphology/{subfolder}/cell_data.csv"
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
     script:
-        "scripts/extract_cell_morphology.py"
+        "scripts/extract_instantaneous_cell_morphodynamics.py"
 
 
-rule extract_cell_morphodynamics:
+rule extract_time_averaged_cell_morphodynamics:
     input:
-        "4a_cell_morphology/{subfolder}/cell_data.csv",
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv",
         get_segmentation_relabeled_files_list_from_subfolder,
     output:
-        "4b_cell_morphodynamics/{subfolder}/cell_data.csv"
+        "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"
     script:
-        "scripts/extract_cell_morphodynamics.py"
+        "scripts/extract_time_averaged_cell_morphodynamics.py"
