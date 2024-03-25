@@ -95,6 +95,33 @@ def get_instantaneous_speeds(this_cell_df, cycleTime):
         return speed, speed_angle
     except:
         return speed, speed_angle
+
+
+def measure_directionality_ratio(this_cell_df, cycleTime):
+    # This function sets the first value as 1 and the second value is 1 by calculation
+    x_positions = this_cell_df['centroid-0'].values
+    y_positions = this_cell_df['centroid-1'].values
+    start_position = (x_positions[0], y_positions[0])
+    total_distance_traversed = 0
+    directionality_ratios = -1 * np.ones(len(x_positions), float)
+    try:
+        for i in range(len(x_positions)):
+            if i == 0:
+                directionality_ratios[i] = 1
+            else:
+                displacement_since_last_position = (x_positions[i] - x_positions[i-1], 
+                                                    y_positions[i] - y_positions[i-1])
+                dist_since_last_position = np.linalg.norm(displacement_since_last_position)
+                total_distance_traversed += dist_since_last_position
+
+                displacement_since_origin = (x_positions[i] - x_positions[0], 
+                                                    y_positions[i] - y_positions[0])
+                dist_since_origin = np.linalg.norm(displacement_since_origin)
+
+                directionality_ratios[i] = dist_since_origin / total_distance_traversed
+        return directionality_ratios
+    except:
+        return directionality_ratios
     
 cell_indices = list(df_all.index.get_level_values(0).unique())
 
@@ -106,6 +133,7 @@ for this_cellID in cell_indices:
     df_all.loc[this_cellID, 'speed'] = speed
     df_all.loc[this_cellID, 'speed_angle'] = speed_angle
     df_all.loc[this_cellID, 'N_frames_existence'] = int(len(this_cell_df))
+    df_all.loc[this_cellID, 'directionality_ratio'] = measure_directionality_ratio(this_cell_df, cycleTime)
 #    display(this_cell_df)
 
 df_all.to_csv(this_output)
