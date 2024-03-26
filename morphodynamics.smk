@@ -75,10 +75,23 @@ rule extract_instantaneous_cell_morphodynamics:
     script:
         "scripts/extract_instantaneous_cell_morphodynamics.py"
 
+def get_list_of_input_subfolders(wildcards):
+    list_of_subfolders = [os.path.join('1_data', each) for each in os.listdir('1_data') if os.path.isdir(os.path.join('1_data', each))]
+    return list_of_subfolders
+
+rule get_maximum_common_time:
+    input:
+        get_list_of_input_subfolders
+    output:
+        "maximum_common_time.txt"
+    script:
+        "scripts/get_maximum_common_time.py"
+
 
 rule extract_time_averaged_cell_morphodynamics:
     input:
         "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv",
+        "maximum_common_time.txt",
         get_segmentation_relabeled_files_list_from_subfolder,
     output:
         "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"

@@ -122,7 +122,56 @@ def measure_directionality_ratio(this_cell_df, cycleTime):
         return directionality_ratios
     except:
         return directionality_ratios
+
+
+def get_displacement_norm_from_origin(this_cell_df):
+    #Length of the diplacement vector from origin to current position
+    #Ignores intermediate path
+    x_positions = this_cell_df['centroid-0'].values
+    y_positions = this_cell_df['centroid-1'].values
+    start_position = (x_positions[0], y_positions[0])
+    displacement_norm_from_origin = -1 * np.ones(len(x_positions), float)
+    displacement_norm_from_origin_squared = -1 * np.ones(len(x_positions), float)
+    try:
+        for i in range(len(x_positions)):
+            if i == 0:
+                displacement_norm_from_origin[i] = 0
+                displacement_norm_from_origin_squared[i] = 0
+            else:
+                displacement_since_origin = (x_positions[i] - x_positions[0], 
+                                                            y_positions[i] - y_positions[0])
+                this_displacement_norm_since_origin = np.linalg.norm(displacement_since_origin)
+                displacement_norm_from_origin[i] = this_displacement_norm_since_origin
+                displacement_norm_from_origin_squared[i] = this_displacement_norm_since_origin**2
+        return displacement_norm_from_origin, displacement_norm_from_origin_squared
+    except:
+        return displacement_norm_from_origin, displacement_norm_from_origin_squared
+
+
+def get_path_distance_from_origin(this_cell_df):
+    #measures the path distance from origin
+    #not direct line distance
+    x_positions = this_cell_df['centroid-0'].values
+    y_positions = this_cell_df['centroid-1'].values
+    start_position = (x_positions[0], y_positions[0])
+    total_distance_traversed = 0
+    total_distance_traversed_array = -1 * np.ones(len(x_positions), float)
+    try:
+        for i in range(len(x_positions)):
+            if i == 0:
+                total_distance_traversed_array[i] = 0
+            else:
+                displacement_since_last_position = (x_positions[i] - x_positions[i-1], 
+                                                    y_positions[i] - y_positions[i-1])
+                dist_since_last_position = np.linalg.norm(displacement_since_last_position)
+                total_distance_traversed += dist_since_last_position
+                total_distance_traversed_array[i] = total_distance_traversed
+                
+        return total_distance_traversed_array
+    except:
+        return total_distance_traversed_array
     
+   
 cell_indices = list(df_all.index.get_level_values(0).unique())
 
 for this_cellID in cell_indices:
@@ -134,6 +183,11 @@ for this_cellID in cell_indices:
     df_all.loc[this_cellID, 'speed_angle'] = speed_angle
     df_all.loc[this_cellID, 'N_frames_existence'] = int(len(this_cell_df))
     df_all.loc[this_cellID, 'directionality_ratio'] = measure_directionality_ratio(this_cell_df, cycleTime)
+    displacement_norm_from_origin, displacement_norm_from_origin_squared =\
+    get_displacement_norm_from_origin(this_cell_df)
+    df_all.loc[this_cellID, 'displacement_norm_from_origin'] = displacement_norm_from_origin
+    df_all.loc[this_cellID, 'displacement_norm_from_origin_squared'] = displacement_norm_from_origin_squared
+    df_all.loc[this_cellID, 'path_distance_from_origin'] = get_path_distance_from_origin(this_cell_df)
 #    display(this_cell_df)
 
 df_all.to_csv(this_output)

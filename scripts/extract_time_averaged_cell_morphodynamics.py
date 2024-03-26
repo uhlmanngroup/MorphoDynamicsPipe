@@ -23,7 +23,8 @@ this_input = list(snakemake.input)
 this_output = snakemake.output[0]
 
 data_name = this_input[0]
-segmentation_relabeled_names = this_input[1:]
+maximum_common_time_name = this_input[1]
+segmentation_relabeled_names = this_input[2:]
 image_names = [each.replace('3b_tracking_images', '1_data') for each in segmentation_relabeled_names]
 cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
                                    'cycleTime', ending='/', mydtype=int)
@@ -36,10 +37,14 @@ cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0],
 data = pd.read_csv(data_name, index_col=(0))
 data.sort_values(['cellID', 'frame_id_T'], inplace=True)
 
+f = open(maximum_common_time_name, "r")
+maximum_common_time = int(f.read())
+f.close()
+
 #seg_relabeled = np.array([skimage.io.imread(each) for each in seg_relabeled_names])
 #images = np.array([skimage.io.imread(each) for each in image_names])
 
-unique_cell_ids = np.unique(data.index.get_level_values(0))
+df_time = data.loc[data['realTime'] <= maximum_common_time]
 
 def speeds_weighted(this_cell_data, cycleTime):
     speed_summaries = {}
@@ -126,10 +131,11 @@ def get_summary_statistics(this_cell_data):
     return summary_stats
 
 
+unique_cell_ids = np.unique(df_time.index.get_level_values(0))
 list_cell_properties = []
 
 for this_cell_id in unique_cell_ids:
-    this_cell_data= data.loc[data.index == this_cell_id]
+    this_cell_data= df_time.loc[df_time.index == this_cell_id]
     
     this_cell_properties = {'cellId':int(this_cell_id)}
     this_cell_properties.update(time_span_properties(this_cell_data, cycleTime))
