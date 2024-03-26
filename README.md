@@ -1,7 +1,7 @@
 # MorphoDynamicsPipe
 A library to use snakemake to run a morphodynamics analysis on cells
 
-run `mamba env create -f conda_envs_yaml/environment_morphody10_dev.yml`
+run `mamba env create -f conda_envs_yaml/environment_morphody12_dev.yml`
 
 `conda activate morphody10`
 Then run `snakemake -s morphodynamics.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going` 

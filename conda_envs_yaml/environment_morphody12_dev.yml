@@ -1,9 +1,13 @@
-# conda version 24.1.2
-# mamba version 1.5.7
-name: morphody11
+#trying to include micro sam in this environment
+# conda version 24.3.0
+# mamba version 1.5.8
+# miniforge
+name: morphody12
 channels:
 #  - defaults
   - conda-forge
+#  - pytorch
+#  - nvidia
 dependencies:
   - python
   - pip
@@ -20,8 +24,9 @@ dependencies:
   - jupyterlab
   - jupytext
   - matplotlib
+  - micro_sam
   - napari
-#  - napari-aicsimageio
+  - napari-aicsimageio #removing this doesn't solve the problem
   - notebook
   - numba
   - numpy
@@ -32,6 +37,7 @@ dependencies:
   - pims
   - pyqt
   - pytables
+  - python-elf #this is part of micro_sam
   - readlif
   - requests
   - scanpy
@@ -39,6 +45,7 @@ dependencies:
   - scikit-learn
   - stardist
   - tensorflow
+  - torch_em #this is part of micro_sam
   - tqdm
   - umap-learn
   - xlrd
