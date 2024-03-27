@@ -47,6 +47,7 @@ myprops = ('label', 'area', 'area_bbox', 'area_convex', 'area_filled',
 
 list_of_dataframes = []
 
+# This part of the code iterates over frames to capture cell information
 for this_frame_id in unique_frame_ids:
     this_frame = seg_relabeled[int(this_frame_id)]
     df = pd.DataFrame(regionprops_table(this_frame, properties = myprops))
@@ -73,7 +74,19 @@ for this_frame_id in unique_frame_ids:
 df_all = pd.concat(list_of_dataframes)
 
 def get_instantaneous_speeds(this_cell_df, cycleTime):
-    # This function leaves the last value as a -1
+    """
+    This function calculates the instantaneous speed of the cell
+    The speed is calculated as the distance between the next position and the current position
+    divided by the real time difference between the next frame and the current frame
+    This_cell_df is a pandas dataframe that contains the information of one cell through time
+    It must have columns for centroid-0 and centroid-1
+    The index should be the index of time to be multiplied by cycleTime to get the real time
+    This function does not currently handle the resolution of the image,
+    but returns the speed in pixels per real time.
+
+    This functions leaves the last value as -1 because there is no next position to calculate the speed
+    """
+    
     x_positions = this_cell_df['centroid-0'].values
     y_positions = this_cell_df['centroid-1'].values
     times = (this_cell_df.index*cycleTime).values
@@ -98,6 +111,15 @@ def get_instantaneous_speeds(this_cell_df, cycleTime):
 
 
 def measure_directionality_ratio(this_cell_df, cycleTime):
+    """
+    This function calculates the directionality ratio of the cell. 
+    This is calculated as the ratio of the distance from the origin to the current position 
+    divided by the total distance traversed by the cell (the path distance).
+
+
+    """
+
+
     # This function sets the first value as 1 and the second value is 1 by calculation
     x_positions = this_cell_df['centroid-0'].values
     y_positions = this_cell_df['centroid-1'].values
@@ -125,8 +147,11 @@ def measure_directionality_ratio(this_cell_df, cycleTime):
 
 
 def get_displacement_norm_from_origin(this_cell_df):
-    #Length of the diplacement vector from origin to current position
-    #Ignores intermediate path
+    """"
+    This function calculates the displacement of the cell from the origin
+    It ignores the intermediate path
+    """
+
     x_positions = this_cell_df['centroid-0'].values
     y_positions = this_cell_df['centroid-1'].values
     start_position = (x_positions[0], y_positions[0])
@@ -149,8 +174,11 @@ def get_displacement_norm_from_origin(this_cell_df):
 
 
 def get_path_distance_from_origin(this_cell_df):
-    #measures the path distance from origin
-    #not direct line distance
+    """
+    This function calculates the path distance of the cell from the origin
+    This is the total distance traversed by the cell
+    """
+
     x_positions = this_cell_df['centroid-0'].values
     y_positions = this_cell_df['centroid-1'].values
     start_position = (x_positions[0], y_positions[0])
@@ -174,6 +202,7 @@ def get_path_distance_from_origin(this_cell_df):
    
 cell_indices = list(df_all.index.get_level_values(0).unique())
 
+#This part of the code iterates over cells to calculate the dynamics features
 for this_cellID in cell_indices:
 #    if this_cellID != 3:
 #        continue

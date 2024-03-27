@@ -6,6 +6,20 @@ import scipy
 import natsort
 
 def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=str):
+    """
+    This function is used to extract information from a string. 
+    It is common used when a variable is encoded in the name of a file or folder.
+    One example for this is 'Time_10_Channel_0.tif' 
+    This function is used to extract the value of the variable 'Time' from the string with a value of 10
+
+    Args:
+    folder: string, this is the folder name (or any other string you would like to extract the value from)
+    variable: string, this is the substring variable name that exists in the folder name
+    preceding: string, this is the character between the variable and the value you would like to extract
+    ending: string, this is the character that should follow the value you would like to extract
+    If the value is at the end of the string, then I think it can be set to anything
+    mydtype: type (e.g. int, str, float)
+    """
     i = folder.index(variable)
     length = len(variable)
     i_ans_start = i + length + len(preceding)
@@ -44,6 +58,7 @@ f.close()
 #seg_relabeled = np.array([skimage.io.imread(each) for each in seg_relabeled_names])
 #images = np.array([skimage.io.imread(each) for each in image_names])
 
+#This line limits the input data so that it works over a common time range
 df_time = data.loc[data['realTime'] <= maximum_common_time]
 
 def speeds_weighted(this_cell_data, cycleTime):
@@ -134,6 +149,7 @@ def get_summary_statistics(this_cell_data):
 unique_cell_ids = np.unique(df_time.index.get_level_values(0))
 list_cell_properties = []
 
+#this interates over all the cells, calculating the morphodynamic properties
 for this_cell_id in unique_cell_ids:
     this_cell_data= df_time.loc[df_time.index == this_cell_id]
     

@@ -1,13 +1,9 @@
-#trying to include micro sam in this environment
 # conda version 24.3.0
 # mamba version 1.5.8
-# miniforge
-name: morphody12
+name: morphody30
 channels:
 #  - defaults
   - conda-forge
-#  - pytorch
-#  - nvidia
 dependencies:
   - python
   - pip
@@ -16,6 +12,7 @@ dependencies:
   - anndata
   - bioconda::snakemake
   - btrack
+  - czifile
   - colour
   - hdbscan
   - imbalanced-learn
@@ -25,19 +22,19 @@ dependencies:
   - jupytext
   - matplotlib
   - micro_sam
-  - napari
-  - napari-aicsimageio #removing this doesn't solve the problem
+  - napari=0.4.18 #this has to be this version otherwise on newer versions you get segfaults on labels
+  - napari-aicsimageio
   - notebook
   - numba
   - numpy
-#  - opencv
+  - opencv
   - openpyxl
   - pandas
-#  - pillow
+  - pillow
   - pims
+  - python-elf
   - pyqt
   - pytables
-  - python-elf #this is part of micro_sam
   - readlif
   - requests
   - scanpy
@@ -45,7 +42,7 @@ dependencies:
   - scikit-learn
   - stardist
   - tensorflow
-  - torch_em #this is part of micro_sam
+  - torch_em
   - tqdm
   - umap-learn
   - xlrd
@@ -60,4 +57,6 @@ dependencies:
 #    - morphodynamics
 #    - git+https://github.com/guiwitz/napari-morphodynamics.git
 #    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
-#    - aicspylibczi
+    - aicspylibczi
+#    - czitools #this package changes a lot of tools from the conda environment, so 
+#       if I need it I will have to solve for this later or put it in a different environment

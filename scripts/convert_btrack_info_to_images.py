@@ -9,6 +9,20 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm, trange
 
 def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=str):
+    """
+    This function is used to extract information from a string. 
+    It is common used when a variable is encoded in the name of a file or folder.
+    One example for this is 'Time_10_Channel_0.tif' 
+    This function is used to extract the value of the variable 'Time' from the string with a value of 10
+
+    Args:
+    folder: string, this is the folder name (or any other string you would like to extract the value from)
+    variable: string, this is the substring variable name that exists in the folder name
+    preceding: string, this is the character between the variable and the value you would like to extract
+    ending: string, this is the character that should follow the value you would like to extract
+    If the value is at the end of the string, then I think it can be set to anything
+    mydtype: type (e.g. int, str, float)
+    """
     i = folder.index(variable)
     length = len(variable)
     i_ans_start = i + length + len(preceding)

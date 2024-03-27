@@ -1,3 +1,7 @@
+#this file takes a list of folders as input, extracts their subfiles
+# and finds the maximum time that is common to all time series
+#This is to enable
+
 import os
 import natsort
 

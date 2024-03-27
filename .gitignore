@@ -179,3 +179,4 @@ scripts/testing*
 4a_instantaneous_cell_morphodynamics/
 4b_time_averaged_cell_morphodynamics/
 maximum_common_time.txt
+conda_envs_yaml/OLD/*
