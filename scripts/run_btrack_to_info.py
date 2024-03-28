@@ -50,7 +50,7 @@ with btrack.BayesianTracker() as tracker:
     tracker.track(step_size= 100)
 
   # generate hypotheses and run the global optimizer
-    tracker.optimize()
+#    tracker.optimize()
 
   # store the data in an HDF5 file
  #   tracker.export(os.path.join(experiment_folder, 'hdf5_data.h5'), obj_type='obj_type_1')

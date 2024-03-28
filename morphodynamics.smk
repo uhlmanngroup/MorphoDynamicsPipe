@@ -1,5 +1,6 @@
 import os
 import natsort
+import re
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
@@ -7,20 +8,38 @@ both.filename
 
 rule all:
     input:
-#        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+#        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 ####################################################################################################
 # Segmentation
 
-rule segment_with_stardist:
+#rule segment_with_stardist:
+#    input:
+#        "1_data/{subfolder_filename}.tif"
+#    output:
+#        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
+#    shell:
+#        "python scripts/run_stardist.py {input} {output}"
+
+
+def get_equivalent_nuclear_segmentation(wildcards):
+    this_root_sub = os.path.abspath("../../2024-03-14_snakemake_develop_tracking/MorphoDynamicsPipe/2_segmentation/")
+    new_subfolder_filename = re.sub('C=2', 'C=0', wildcards.subfolder_filename)
+    new_fullpath = os.path.join(this_root_sub, new_subfolder_filename) + '.tif'
+    print(new_fullpath)
+    return [new_fullpath]
+
+rule segment_with_micro_sam:
     input:
-        "1_data/{subfolder_filename}.tif"
+        "1_data/{subfolder_filename}.tif",
+        get_equivalent_nuclear_segmentation
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
-    shell:
-        "python scripts/run_stardist.py {input} {output}"
+    script:
+        "scripts/run_microsam.py"
 
 ####################################################################################################
 # Tracking

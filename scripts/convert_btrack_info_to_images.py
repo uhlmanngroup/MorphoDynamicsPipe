@@ -50,7 +50,7 @@ T = getvaluefromstringbest(this_input[0], '_T=', preceding = '', ending='.tif', 
 
 data_for_this_frame = data[data[:,1] == T]
 dict_data_id_to_coords = {int(each[0]):(each[2], each[3]) for each in data_for_this_frame}
-output_segmentation = np.zeros(frame.shape, frame.dtype)
+output_segmentation = np.zeros(frame.shape, int)
 
 for this_id in dict_data_id_to_coords.keys():
     this_coords = dict_data_id_to_coords[this_id]
