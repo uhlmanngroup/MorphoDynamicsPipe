@@ -1,10 +1,11 @@
 # conda version 24.3.0
 # mamba version 1.5.8
 # miniforge
-name: morphody31
+name: morphody33
 channels:
 #  - defaults
   - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
 dependencies:
   - python
   - pip
@@ -38,6 +39,7 @@ dependencies:
   - pandas
   - pillow
   - pims
+  - pystackreg
   - python-elf
   - pyqt
   - pytables

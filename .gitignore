@@ -173,6 +173,7 @@ data2/
 troubleshooting.ipynb
 testing.ipynb
 testing*
+test*
 4a_cell_morphology/
 4b_cell_morphodynamics/
 scripts/testing*
@@ -180,3 +181,6 @@ scripts/testing*
 4b_time_averaged_cell_morphodynamics/
 maximum_common_time.txt
 conda_envs_yaml/OLD/*
+1a*/
+1b*/
+1c*/
