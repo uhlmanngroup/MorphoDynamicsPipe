@@ -1,7 +1,7 @@
 # conda version 24.3.0
 # mamba version 1.5.8
 # miniforge
-name: morphody30
+name: morphody31
 channels:
 #  - defaults
   - conda-forge
@@ -29,7 +29,7 @@ dependencies:
   # when you try and combine with packages that use numba
   # I think it was napari 0.4.19post1 that was the problem
   - napari-aicsimageio
-#  - natsort #I should make this explicit when I do an update
+  - natsort
   - notebook
   - numba
   - numpy
@@ -63,7 +63,8 @@ dependencies:
 #    - tensorflow[and-cuda]
 #    - morphodynamics
 #    - git+https://github.com/guiwitz/napari-morphodynamics.git
-#    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
+    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
     - aicspylibczi
 #    - czitools #this package changes a lot of tools from the conda environment, so 
 #       if I need it I will have to solve for this later or put it in a different environment
+    - ipynb

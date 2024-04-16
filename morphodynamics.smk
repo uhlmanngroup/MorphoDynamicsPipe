@@ -14,14 +14,14 @@ rule all:
 ####################################################################################################
 # Segmentation
 
-#rule segment_with_stardist:
-#    input:
-#        "1_data/{subfolder_filename}.tif"
-#    output:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    retries: 10
-#    shell:
-#        "python scripts/run_stardist.py {input} {output}"
+rule segment_with_stardist:
+    input:
+        "1_data/{subfolder_filename}.tif"
+    output:
+        "2_segmentation/{subfolder_filename}.tif"
+    retries: 10
+    shell:
+        "python scripts/run_stardist.py {input} {output}"
 
 
 def get_equivalent_nuclear_segmentation(wildcards):
@@ -31,15 +31,15 @@ def get_equivalent_nuclear_segmentation(wildcards):
     print(new_fullpath)
     return [new_fullpath]
 
-rule segment_with_micro_sam:
-    input:
-        "1_data/{subfolder_filename}.tif",
-        get_equivalent_nuclear_segmentation
-    output:
-        "2_segmentation/{subfolder_filename}.tif"
-    retries: 10
-    script:
-        "scripts/run_microsam.py"
+#rule segment_with_micro_sam:
+#    input:
+#        "1_data/{subfolder_filename}.tif",
+#        get_equivalent_nuclear_segmentation
+#    output:
+#        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
+#    script:
+#        "scripts/run_microsam.py"
 
 ####################################################################################################
 # Tracking
