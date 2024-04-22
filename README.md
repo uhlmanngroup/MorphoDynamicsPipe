@@ -9,4 +9,6 @@ when in the folder
 
 
 To add data, create a folder called `1_data` inside the main MorphoDynamicsPipe folder. 
-Put data in the in the format `1_data/folder1/file1.tif`, `1_data/folder1/file2.tif`
+Put data in the in the format 
+`1_data/folder1/file1_T=0.tif`, `1_data/folder1/file2_T=1.tif`, `1_data/folder1/file1_T=2.tif`, 
+`1_data/folder2/file1_T=0.tif`, `1_data/folder2/file2_T=1.tif`, `1_data/folder2/file1_T=2.tif`, 
