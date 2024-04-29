@@ -8,7 +8,7 @@ both.filename
 
 rule all:
     input:
-        expand("1c_stabilize/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 #        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 ####################################################################################################
@@ -21,29 +21,29 @@ def get_stabilization_files_list_from_subfolder(wildcards):
         each in natsort.natsorted(os.listdir(this_original_sub))]
     return list_of_stabilized_images
 
-rule stabilize_individuals_to_group:
-    input:
-        get_stabilization_files_list_from_subfolder
-    output:
+#rule stabilize_individuals_to_group:
+#    input:
+#        get_stabilization_files_list_from_subfolder
+#    output:
 #        "1b_stabilize/{subfolder}/{filename}.tif"
 #        ["1b_stabilize/{subfolder}/{filename}.txt".format(filename=filename) for filename in os.listdir("1b_stabilize/{subfolder}/")]
-        "1b_stabilize/{subfolder}/image_stack.npy"
-    script:
-        "scripts/run_pystackreg.py"
+#        "1b_stabilize/{subfolder}/image_stack.npy"
+#    script:
+#        "scripts/run_pystackreg.py"
 
 def get_image_stack_from_subfolderfilename(wildcards):
     subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
     image_stack = os.path.join('1b_stabilize', subfolder, 'image_stack.npy')
     return image_stack
 
-rule stabilize_group_back_to_individuals:
-    input:
-        get_image_stack_from_subfolderfilename,
-        "1_data/{subfolder_filename}.tif"
-    output:
-        "1c_stabilize/{subfolder_filename}.tif"
-    script:
-        "scripts/run_group_back_to_individuals.py"
+#rule stabilize_group_back_to_individuals:
+#    input:
+#        get_image_stack_from_subfolderfilename,
+#        "1_data/{subfolder_filename}.tif"
+#    output:
+#        "1c_stabilize/{subfolder_filename}.tif"
+#    script:
+#        "scripts/run_group_back_to_individuals.py"
     
 
 ####################################################################################################
@@ -75,6 +75,15 @@ rule stabilize_group_back_to_individuals:
 #    retries: 10
 #    script:
 #        "scripts/run_microsam.py"
+
+rule segment_with_cellpose_nucs:
+    input:
+        "1_data/{subfolder_filename}.tif",
+    output:
+        "2_segmentation/{subfolder_filename}.tif"
+    retries: 10
+    script:
+        "scripts/run_cellpose_nucs.py"
 
 ####################################################################################################
 # Tracking
