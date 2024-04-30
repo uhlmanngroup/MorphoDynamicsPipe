@@ -59,12 +59,13 @@ def get_image_stack_from_subfolderfilename(wildcards):
 #        "python scripts/run_stardist.py {input} {output}"
 
 
-#def get_equivalent_nuclear_segmentation(wildcards):
+def get_equivalent_nuclear_segmentation(wildcards):
 #    this_root_sub = os.path.abspath("../../2024-03-14_snakemake_develop_tracking/MorphoDynamicsPipe/2_segmentation/")
-#    new_subfolder_filename = re.sub('C=2', 'C=0', wildcards.subfolder_filename)
-#    new_fullpath = os.path.join(this_root_sub, new_subfolder_filename) + '.tif'
+    this_root_sub = os.path.abspath("../../2024-04-25_new_lifs_batch_nucs/MorphoDynamicsPipe/2_segmentation/")
+    new_subfolder_filename = re.sub('C=2', 'C=0', wildcards.subfolder_filename)
+    new_fullpath = os.path.join(this_root_sub, new_subfolder_filename) + '.tif'
 #    print(new_fullpath)
-#    return [new_fullpath]
+    return [new_fullpath]
 
 #rule segment_with_micro_sam:
 #    input:
@@ -76,14 +77,23 @@ def get_image_stack_from_subfolderfilename(wildcards):
 #    script:
 #        "scripts/run_microsam.py"
 
-rule segment_with_cellpose_nucs:
+#rule segment_with_cellpose_nucs:
+#    input:
+#        "1_data/{subfolder_filename}.tif",
+#    output:
+#        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
+#    script:
+#        "scripts/run_cellpose_nucs.py"
+
+rule segment_with_cellpose_celltracker_with_nucs:
     input:
         "1_data/{subfolder_filename}.tif",
+        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
     output:
         "2_segmentation/{subfolder_filename}.tif"
-    retries: 10
     script:
-        "scripts/run_cellpose_nucs.py"
+        "scripts/run_cellpose_celltracker_with_nucs.py"
 
 ####################################################################################################
 # Tracking
