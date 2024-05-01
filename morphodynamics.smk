@@ -77,22 +77,22 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    script:
 #        "scripts/run_microsam.py"
 
-rule segment_with_cellpose_nucs:
-    input:
-        "1_data/{subfolder_filename}.tif",
-    output:
-        "2_segmentation/{subfolder_filename}.tif"
-    script:
-        "scripts/run_cellpose_nucs.py"
-
-#rule segment_with_cellpose_celltracker_with_nucs:
+#rule segment_with_cellpose_nucs:
 #    input:
 #        "1_data/{subfolder_filename}.tif",
-#        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
 #    script:
-#        "scripts/run_cellpose_celltracker_with_nucs.py"
+#        "scripts/run_cellpose_nucs.py"
+
+rule segment_with_cellpose_celltracker_with_nucs:
+    input:
+        "1_data/{subfolder_filename}.tif",
+        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
+    output:
+        "2_segmentation/{subfolder_filename}.tif"
+    script:
+        "scripts/run_cellpose_celltracker_with_nucs.py"
 
 ####################################################################################################
 # Tracking
