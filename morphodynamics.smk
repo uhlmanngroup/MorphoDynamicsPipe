@@ -8,7 +8,7 @@ both.filename
 
 rule all:
     input:
-        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("3b_tracking_images_from_nucs/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 #        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 ####################################################################################################
@@ -119,14 +119,24 @@ def get_tracking_info_from_subfolderfilename(wildcards):
     tracking_info = os.path.join('3a_tracking_info', subfolder, 'track_info.npy')
     return tracking_info
 
+def get_tracking_info_from_subfolderfilename_nuclei_version(wildcards):
+    subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
+    subfolder_renamed = re.sub('C=2', 'C=0', subfolder)
+    tracking_info_base_path = os.path.abspath('../../2024-04-25_new_lifs_batch_nucs/MorphoDynamicsPipe/3a_tracking_info')
+    tracking_info = os.path.join(tracking_info_base_path, subfolder_renamed, 'track_info.npy')
+    return tracking_info
+
 rule convert_btrack_info_to_images:
     input:
         "2_segmentation/{subfolder_filename}.tif",
         get_tracking_info_from_subfolderfilename,
     output:
-        "3b_tracking_images/{subfolder_filename}.tif"
+#        "3b_tracking_images/{subfolder_filename}.tif"
+        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
     script:
         "scripts/convert_btrack_info_to_images.py"
+
+
 
 ####################################################################################################
 # Cell Morphodynamics

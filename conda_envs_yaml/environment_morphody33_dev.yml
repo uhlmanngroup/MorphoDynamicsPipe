@@ -24,6 +24,7 @@ dependencies:
   - jpype1
   - jupyterlab
   - jupytext
+  # possibly add jupyterlab_kernel_usage (with an add-on) or jupyter-resource-usage
   - matplotlib
   - micro_sam
   - napari=0.4.18 #this has to be this version otherwise on newer versions you get segfaults on labels
