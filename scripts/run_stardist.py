@@ -1,10 +1,10 @@
 import skimage
-from datetime import datetime
+#from datetime import datetime
 
 #30 seconds
-start = datetime.now(); print(start)
+#start = datetime.now(); print(start)
 from stardist.models import StarDist2D
-print(datetime.now() - start)
+#print(datetime.now() - start)
 
 model = StarDist2D.from_pretrained('2D_versatile_fluo')
 
