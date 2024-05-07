@@ -1,3 +1,4 @@
+#this file filters objects that do no last for a long time
 import os
 import skimage
 import numpy as np
