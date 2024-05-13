@@ -8,8 +8,8 @@ both.filename
 
 rule all:
     input:
-        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
-#        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
+#        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
 
 ####################################################################################################
 # Preprocessing
@@ -150,41 +150,42 @@ rule filter_cells_after_tracking:
 ####################################################################################################
 # Cell Morphodynamics
 
-#def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
-#    this_original_sub = "1_data/" + wildcards.subfolder
+def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
 #    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
-#    list_of_segmented_images = [os.path.join(this_root_sub, each)
-#        for each in natsort.natsorted(os.listdir(this_original_sub))]
-#    return list_of_segmented_images
+    this_root_sub = "3b_tracking_images_from_nucs/" + wildcards.subfolder
+    list_of_segmented_images = [os.path.join(this_root_sub, each)
+        for each in natsort.natsorted(os.listdir(this_original_sub))]
+    return list_of_segmented_images
 
-#rule extract_instantaneous_cell_morphodynamics:
-#    input:
-#        "3a_tracking_info/{subfolder}/track_info.npy",
-#        get_segmentation_relabeled_files_list_from_subfolder,
-#    output:
-#        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
-#    script:
-#        "scripts/extract_instantaneous_cell_morphodynamics.py"
+rule extract_instantaneous_cell_morphodynamics:
+    input:
+        "3a_tracking_info/{subfolder}/track_info.npy",
+        get_segmentation_relabeled_files_list_from_subfolder,
+    output:
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
+    script:
+        "scripts/extract_instantaneous_cell_morphodynamics.py"
 
-#def get_list_of_input_subfolders(wildcards):
-#    list_of_subfolders = [os.path.join('1_data', each) for each in os.listdir('1_data') if os.path.isdir(os.path.join('1_data', each))]
-#    return list_of_subfolders
+def get_list_of_input_subfolders(wildcards):
+    list_of_subfolders = [os.path.join('1_data', each) for each in os.listdir('1_data') if os.path.isdir(os.path.join('1_data', each))]
+    return list_of_subfolders
 
-#rule get_maximum_common_time:
-#    input:
-#        get_list_of_input_subfolders
-#    output:
-#        "maximum_common_time.txt"
-#    script:
-#        "scripts/get_maximum_common_time.py"
+rule get_maximum_common_time:
+    input:
+        get_list_of_input_subfolders
+    output:
+        "maximum_common_time.txt"
+    script:
+        "scripts/get_maximum_common_time.py"
 
 
-#rule extract_time_averaged_cell_morphodynamics:
-#    input:
-#        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv",
-#        "maximum_common_time.txt",
-#        get_segmentation_relabeled_files_list_from_subfolder,
-#    output:
-#        "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"
-#    script:
-#        "scripts/extract_time_averaged_cell_morphodynamics.py"
+rule extract_time_averaged_cell_morphodynamics:
+    input:
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv",
+        "maximum_common_time.txt",
+        get_segmentation_relabeled_files_list_from_subfolder,
+    output:
+        "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"
+    script:
+        "scripts/extract_time_averaged_cell_morphodynamics.py"

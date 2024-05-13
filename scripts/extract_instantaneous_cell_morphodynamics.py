@@ -47,16 +47,60 @@ myprops = ('label', 'area', 'area_bbox', 'area_convex', 'area_filled',
 
 list_of_dataframes = []
 
+
+def curvature(this_mask):
+    try:
+        outline = (skimage.morphology.dilation(this_mask) ^ this_mask)*1.0
+        curves = measure.find_contours(outline, 0.0, fully_connected='high')
+        # Smooth contour with Gaussian kernel
+        sigma = 3.0
+
+        smoothedCurves={}
+        for c in range(0, len(curves)):
+            sx = nd.gaussian_filter1d(curves[c][:,0], sigma)
+            sy = nd.gaussian_filter1d(curves[c][:,1], sigma)
+
+            smoothedCurves[c] = np.vstack((sx,sy))
+        objectSizes=[len(smoothedCurves[c][0]) for c in smoothedCurves]
+        ind=np.where(objectSizes==np.max(objectSizes))[0][0]
+
+        # Input parameters for CPDA
+    #    Lvals=[10,25,50,75,100,200,400,800,1000]
+        Lvals=[10]
+        # Compute CPDA
+        for L in Lvals:
+            # If indexing runs clockwise, flip it:
+            curve=np.flip(smoothedCurves[ind],axis=1)
+            # Else, no need to do anything:
+            # curve=smoothedCurves[ind]
+            H_L=cpda.cpda(curve, L) # This computes curvature
+
+        mean = np.mean(H_L)
+        std = np.std(H_L)
+        mymin = np.min(H_L)
+        mymax = np.max(H_L)
+        frac_below_zero = np.sum(H_L < 0)/len(H_L)
+        
+
+        return mean, std, mymin, mymax, frac_below_zero
+    except:
+        return -1.0, -1.0, -1.0, -1.0, -1.0
+
 # This part of the code iterates over frames to capture cell information
 for this_frame_id in unique_frame_ids:
     this_frame = seg_relabeled[int(this_frame_id)]
-    df = pd.DataFrame(regionprops_table(this_frame, properties = myprops))
+    df = pd.DataFrame(regionprops_table(this_frame, properties = myprops, extra_properties=[curvature]))
     list_of_cellIDs = list(df['label'])
     df['frame_id_T'] = int(this_frame_id)
     df['realTime'] = int(this_frame_id) * cycleTime
     df['frame_shape0'] = this_frame.shape[0]
     df['frame_shape1'] = this_frame.shape[1]
-    df2 = df.rename({'label':'cellID'}, axis=1).set_index(['cellID', 'frame_id_T'])
+    df2 = df.rename({'label':'cellID', 
+                    'curvature-0':'curvature_mean',
+                    'curvature-1':'curvature_std',
+                    'curvature-2':'curvature_min',
+                    'curvature-3':'curvature_max',
+                    'curvature-4':'curvature_frac_below_zero'}, axis=1).set_index(['cellID', 'frame_id_T'])
 #    mycellid_props = df2.to_dict('index')
     
     this_frame_data = data[data[:,1] == this_frame_id]
