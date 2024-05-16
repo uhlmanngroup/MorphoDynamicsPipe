@@ -164,6 +164,7 @@ rule extract_instantaneous_cell_morphodynamics:
         get_segmentation_relabeled_files_list_from_subfolder,
     output:
         "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
+    retries: 2
     script:
         "scripts/extract_instantaneous_cell_morphodynamics.py"
 

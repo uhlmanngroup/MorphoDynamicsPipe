@@ -6,6 +6,8 @@ import scipy
 import natsort
 from skimage.measure import label, regionprops, regionprops_table
 import math
+import scipy.ndimage as nd
+import scripts.cpda as cpda
 
 def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=str):
     i = folder.index(variable)
@@ -51,7 +53,7 @@ list_of_dataframes = []
 def curvature(this_mask):
     try:
         outline = (skimage.morphology.dilation(this_mask) ^ this_mask)*1.0
-        curves = measure.find_contours(outline, 0.0, fully_connected='high')
+        curves = skimage.measure.find_contours(outline, 0.0, fully_connected='high')
         # Smooth contour with Gaussian kernel
         sigma = 3.0
 
