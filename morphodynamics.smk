@@ -12,7 +12,6 @@ rule all:
         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
-
 ####################################################################################################
 # Preprocessing
 
