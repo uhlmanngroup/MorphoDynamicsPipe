@@ -127,8 +127,9 @@ for this_frame_id in unique_frame_ids:
                     'curvature-3':'curvature_max',
                     'curvature-4':'curvature_frac_below_zero'}, axis=1).set_index(['cellID', 'frame_id_T'])
 #    mycellid_props = df2.to_dict('index')
+    mygraph = skimage.graph.RAG(this_frame)
+    mygraph.remove_node(0)
 
-    
     this_frame_data = data[data[:,1] == this_frame_id]
     for this_cellID in list_of_cellIDs:
         this_cellID_frame_data = this_frame_data[this_frame_data[:,0] == this_cellID]
@@ -140,6 +141,7 @@ for this_frame_id in unique_frame_ids:
             df2.loc[this_cellID, 'track_pos1'] = -1
         
         df2.loc[this_cellID, 'number_1px_away'] = int(get_number_of_neighbors(this_cellID, this_frame, pixel_range=1))
+#        df2.loc[this_cellID, 'number_of_adjacent_objects'] = mygraph.degree(this_cellID)
 
     list_of_dataframes.append(df2)
 
@@ -291,4 +293,4 @@ for this_cellID in cell_indices:
     df_all.loc[this_cellID, 'path_distance_from_origin'] = get_path_distance_from_origin(this_cell_df)
 #    display(this_cell_df)
 #display(df_all)
-#df_all.to_csv(this_output)
+df_all.to_csv(this_output)
