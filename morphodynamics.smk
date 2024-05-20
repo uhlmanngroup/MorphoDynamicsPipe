@@ -9,7 +9,9 @@ both.filename
 rule all:
     input:
 #        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
-        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder)
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+
 
 ####################################################################################################
 # Preprocessing
@@ -147,6 +149,7 @@ rule filter_cells_after_tracking:
     script:
         "scripts/filter_short_lived_cells_after_tracking.py"
 
+
 ####################################################################################################
 # Cell Morphodynamics
 
@@ -190,3 +193,14 @@ rule extract_time_averaged_cell_morphodynamics:
         "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"
     script:
         "scripts/extract_time_averaged_cell_morphodynamics.py"
+
+####################################################################################################
+# Visualization (optional)
+
+rule convert_to_label_outlines:
+    input:
+        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
+    output:
+        '5_tracking_images_outlines/{subfolder_filename}.tif'
+    script:
+        "scripts/convert_to_label_outlines.py"
