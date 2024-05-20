@@ -8,6 +8,19 @@ from skimage.measure import label, regionprops, regionprops_table
 import math
 import scipy.ndimage as nd
 import scripts.cpda as cpda
+from functools import partial
+
+def get_number_of_neighbors(i, labels, pixel_range):
+    mask = labels == i
+    dilated = mask.copy()
+    for i in range(pixel_range):
+        dilated = skimage.morphology.binary_dilation(dilated)
+    edge = dilated ^ mask
+    neighbors = np.unique(labels[edge])
+    if 0 in neighbors:
+        return len(neighbors) - 1
+    else:
+        return len(neighbors)
 
 def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=str):
     i = folder.index(variable)
@@ -38,6 +51,17 @@ cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0],
 
 data = np.load(tracking_info)
 seg_relabeled = np.array([skimage.io.imread(each) for each in segmentation_relabeled_names])
+
+if False:
+    #this part should be set to true for testing on a small part of the dataset
+    #otherwise should be false
+    list_of_images_to_keep = [0, 1, 2, 3, 4]
+    myfilter = np.zeros(len(data[:,1]), np.bool_)
+    for i in [0, 1, 2, 3, 4]:
+        myfilter = np.logical_or(data[:,1] == i, myfilter)
+    data = data[myfilter]
+    seg_relabeled = seg_relabeled[list_of_images_to_keep]
+
 unique_cell_ids = np.unique(data[:,0])
 unique_frame_ids = np.unique(data[:,1])
 
@@ -46,8 +70,6 @@ myprops = ('label', 'area', 'area_bbox', 'area_convex', 'area_filled',
             'axis_major_length', 'axis_major_length', 'eccentricity', 'equivalent_diameter_area',
            'euler_number', 'extent', 'feret_diameter_max', 'moments_hu', 'perimeter',
            'perimeter_crofton', 'solidity', 'bbox', 'centroid')
-
-list_of_dataframes = []
 
 
 def curvature(this_mask):
@@ -88,6 +110,7 @@ def curvature(this_mask):
     except:
         return -1.0, -1.0, -1.0, -1.0, -1.0
 
+list_of_dataframes = []
 # This part of the code iterates over frames to capture cell information
 for this_frame_id in unique_frame_ids:
     this_frame = seg_relabeled[int(this_frame_id)]
@@ -104,6 +127,7 @@ for this_frame_id in unique_frame_ids:
                     'curvature-3':'curvature_max',
                     'curvature-4':'curvature_frac_below_zero'}, axis=1).set_index(['cellID', 'frame_id_T'])
 #    mycellid_props = df2.to_dict('index')
+
     
     this_frame_data = data[data[:,1] == this_frame_id]
     for this_cellID in list_of_cellIDs:
@@ -114,7 +138,9 @@ for this_frame_id in unique_frame_ids:
         else:
             df2.loc[this_cellID, 'track_pos0'] = -1
             df2.loc[this_cellID, 'track_pos1'] = -1
-         
+        
+        df2.loc[this_cellID, 'number_1px_away'] = int(get_number_of_neighbors(this_cellID, this_frame, pixel_range=1))
+
     list_of_dataframes.append(df2)
 
 df_all = pd.concat(list_of_dataframes)
@@ -245,7 +271,7 @@ def get_path_distance_from_origin(this_cell_df):
     except:
         return total_distance_traversed_array
     
-   
+
 cell_indices = list(df_all.index.get_level_values(0).unique())
 
 #This part of the code iterates over cells to calculate the dynamics features
@@ -264,5 +290,5 @@ for this_cellID in cell_indices:
     df_all.loc[this_cellID, 'displacement_norm_from_origin_squared'] = displacement_norm_from_origin_squared
     df_all.loc[this_cellID, 'path_distance_from_origin'] = get_path_distance_from_origin(this_cell_df)
 #    display(this_cell_df)
-
-df_all.to_csv(this_output)
+#display(df_all)
+#df_all.to_csv(this_output)
