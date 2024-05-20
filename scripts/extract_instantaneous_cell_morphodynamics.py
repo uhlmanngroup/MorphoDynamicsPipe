@@ -127,8 +127,8 @@ for this_frame_id in unique_frame_ids:
                     'curvature-3':'curvature_max',
                     'curvature-4':'curvature_frac_below_zero'}, axis=1).set_index(['cellID', 'frame_id_T'])
 #    mycellid_props = df2.to_dict('index')
-    mygraph = skimage.graph.RAG(this_frame)
-    mygraph.remove_node(0)
+#    mygraph = skimage.graph.RAG(this_frame)
+#    mygraph.remove_node(0)
 
     this_frame_data = data[data[:,1] == this_frame_id]
     for this_cellID in list_of_cellIDs:
