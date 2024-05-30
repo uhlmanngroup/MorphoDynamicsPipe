@@ -78,22 +78,22 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    script:
 #        "scripts/run_microsam.py"
 
-rule segment_with_cellpose_nucs:
-    input:
-        "1_data/{subfolder_filename}.tif",
-    output:
-        "2_segmentation/{subfolder_filename}.tif"
-    script:
-        "scripts/run_cellpose_nucs.py"
-
-#rule segment_with_cellpose_celltracker_with_nucs:
+#rule segment_with_cellpose_nucs:
 #    input:
 #        "1_data/{subfolder_filename}.tif",
-#        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
 #    script:
-#        "scripts/run_cellpose_celltracker_with_nucs.py"
+#        "scripts/run_cellpose_nucs.py"
+
+rule segment_with_cellpose_celltracker_with_nucs:
+    input:
+        "1_data/{subfolder_filename}.tif",
+        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
+    output:
+        "2_segmentation/{subfolder_filename}.tif"
+    script:
+        "scripts/run_cellpose_celltracker_with_nucs.py"
 
 ####################################################################################################
 # Tracking
@@ -131,7 +131,8 @@ def get_tracking_info_from_subfolderfilename_nuclei_version(wildcards):
 rule convert_btrack_info_to_images:
     input:
         "2_segmentation/{subfolder_filename}.tif",
-        get_tracking_info_from_subfolderfilename,
+#        get_tracking_info_from_subfolderfilename
+        get_tracking_info_from_subfolderfilename_nuclei_version,
     output:
         "3b_tracking_images/{subfolder_filename}.tif"
 #        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
