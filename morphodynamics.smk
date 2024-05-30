@@ -142,7 +142,6 @@ rule filter_cells_after_tracking:
     input:
 #        "3b_tracking_images/{subfolder_filename}.tif",
         "3b_tracking_images_from_nucs/{subfolder_filename}.tif",
-        get_tracking_info_from_subfolderfilename,
     output:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
     script:
