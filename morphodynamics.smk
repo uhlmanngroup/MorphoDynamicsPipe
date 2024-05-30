@@ -133,15 +133,15 @@ rule convert_btrack_info_to_images:
         "2_segmentation/{subfolder_filename}.tif",
         get_tracking_info_from_subfolderfilename,
     output:
-#        "3b_tracking_images/{subfolder_filename}.tif"
-        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
+        "3b_tracking_images/{subfolder_filename}.tif"
+#        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
     script:
         "scripts/convert_btrack_info_to_images.py"
 
 rule filter_cells_after_tracking:
     input:
-#        "3b_tracking_images/{subfolder_filename}.tif",
-        "3b_tracking_images_from_nucs/{subfolder_filename}.tif",
+        "3b_tracking_images/{subfolder_filename}.tif",
+#        "3b_tracking_images_from_nucs/{subfolder_filename}.tif",
     output:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
     script:
@@ -154,7 +154,8 @@ rule filter_cells_after_tracking:
 def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
 #    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
-    this_root_sub = "3b_tracking_images_from_nucs/" + wildcards.subfolder
+#    this_root_sub = "3b_tracking_images_from_nucs/" + wildcards.subfolder
+    this_root_sub = "3c_tracking_images_filtered/" + wildcards.subfolder
     list_of_segmented_images = [os.path.join(this_root_sub, each)
         for each in natsort.natsorted(os.listdir(this_original_sub))]
     return list_of_segmented_images
@@ -197,7 +198,9 @@ rule extract_time_averaged_cell_morphodynamics:
 
 rule convert_to_label_outlines:
     input:
-        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
+#        "3b_tracking_images/{subfolder_filename}.tif"
+#        "3b_tracking_images_from_nucs/{subfolder_filename}.tif"
+        "3c_tracking_images_filtered/{subfolder_filename}.tif"
     output:
         '5_tracking_images_outlines/{subfolder_filename}.tif'
     script:
