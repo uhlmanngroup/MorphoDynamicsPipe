@@ -1,6 +1,8 @@
 # conda version 24.5.0
 # mamba version 1.5.8
 # miniforge
+
+## somehow this does not work with stardist.....
 name: morphody34
 channels:
 #  - defaults
