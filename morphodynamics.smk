@@ -56,8 +56,8 @@ def get_image_stack_from_subfolderfilename(wildcards):
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
 #    retries: 10
-#    shell:
-#        "python scripts/run_stardist.py {input} {output}"
+#    script:
+#        "scripts/run_stardist.py"
 
 
 def get_equivalent_nuclear_segmentation(wildcards):

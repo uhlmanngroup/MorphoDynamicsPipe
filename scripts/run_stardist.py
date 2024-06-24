@@ -9,11 +9,14 @@ from stardist.models import StarDist2D
 model = StarDist2D.from_pretrained('2D_versatile_fluo')
 
 import sys
-this_input = sys.argv[1]
-this_output = sys.argv[2]
+#this_input = sys.argv[1]
+#this_output = sys.argv[2]
 
-im = skimage.io.imread(this_input)
+this_input = list(snakemake.input)
+this_output = list(snakemake.output)
+
+im = skimage.io.imread(this_input[0])
 labels, _ = model.predict_instances(skimage.exposure.equalize_adapthist(im))
 #    print(output_name)
 #    np.save(output_name, labels)
-skimage.io.imsave(this_output, labels, check_contrast=False)
+skimage.io.imsave(this_output[0], labels, check_contrast=False)

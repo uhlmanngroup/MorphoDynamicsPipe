@@ -1,4 +1,4 @@
-# conda version 24.3.0
+# conda version 24.5.0
 # mamba version 1.5.8
 # miniforge
 name: morphody34
@@ -26,7 +26,7 @@ dependencies:
   - jupytext
   # possibly add jupyterlab_kernel_usage (with an add-on) or jupyter-resource-usage
   - matplotlib
-  - microfilm
+  - microfilm #this includes matplotlib-scalebar, and could be useful for quick plotting of multichannel things
   - micro_sam
   - napari=0.4.18 #this has to be this version otherwise on newer versions you get segfaults on labels
   # when you try and combine with packages that use numba
