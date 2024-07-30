@@ -28,7 +28,7 @@ model = denoise.CellposeDenoiseModel(gpu=use_GPU,
 #                                     pretrained_model=path_to_pretrained_model,
                                     )
 
-labels, _, _, _ = model.eval(im, diameter=20.0, flow_threshold=0.7, channels=[0, 0],
-    cellprob_threshold=-2, normalize={'percentile':[0, 100]})
+labels, _, _, _ = model.eval(im, diameter=30.0, flow_threshold=0.4, channels=[0, 0],
+    cellprob_threshold=0, normalize={'percentile':[1, 99]})
 
 skimage.io.imsave(this_output[0], labels, check_contrast=False)

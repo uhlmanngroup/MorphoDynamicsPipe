@@ -1,3 +1,5 @@
+# This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
+# The example images must be copied to 1_data folder before running this pipeline.
 import os
 import natsort
 import re
