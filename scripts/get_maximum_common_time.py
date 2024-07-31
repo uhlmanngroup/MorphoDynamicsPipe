@@ -24,11 +24,17 @@ realTime_common = 1000000000000000000000000000000
 
 for each_subfolder in this_input:
     list_of_files = natsort.natsorted(os.listdir(each_subfolder))
-    maxT = getvaluefromstringbest(list_of_files[-1], '_T=', preceding='', 
+    list_of_files = [each for each in list_of_files if '.tif' in each]
+    try:
+        maxT = getvaluefromstringbest(list_of_files[-1], '_T=', preceding='', 
                            ending='.tif', mydtype=int)
-    cycleTime = getvaluefromstringbest(each_subfolder, 'cycleTime', preceding='_', 
+        cycleTime = getvaluefromstringbest(each_subfolder, 'cycleTime', preceding='_', 
                            mydtype=int)
-    realTime_max = maxT * cycleTime
+        realTime_max = maxT * cycleTime
+    except:
+        print('Error in reading the time from the file')
+        realTime_max = realTime_common
+
     if realTime_max < realTime_common:
         realTime_common = realTime_max
 
