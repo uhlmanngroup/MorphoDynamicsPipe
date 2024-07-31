@@ -113,7 +113,11 @@ def curvature(this_mask):
 list_of_dataframes = []
 # This part of the code iterates over frames to capture cell information
 for this_frame_id in unique_frame_ids:
-    this_frame = seg_relabeled[int(this_frame_id)]
+    try:
+        this_frame = seg_relabeled[int(this_frame_id)]
+    except:
+        print("Error in frame ", this_frame_id)
+        continue
     df = pd.DataFrame(regionprops_table(this_frame, properties = myprops, extra_properties=[curvature]))
     list_of_cellIDs = list(df['label'])
     df['frame_id_T'] = int(this_frame_id)
