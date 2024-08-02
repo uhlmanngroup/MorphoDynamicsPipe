@@ -1,7 +1,7 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
 # uses morphody33 conda environment
-# snakemake -s run.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going
+# snakemake -s run_example.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going
 
 import os
 import natsort
@@ -91,6 +91,7 @@ rule segment_with_cellpose_nucs:
         "1_data/{subfolder_filename}.tif",
     output:
         "2_segmentation/{subfolder_filename}.tif"
+    retries: 10
     script:
         "scripts/run_cellpose_nucs.py"
 
@@ -101,6 +102,7 @@ rule segment_with_cellpose_nucs:
 #        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
 #    script:
 #        "scripts/run_cellpose_celltracker_with_nucs.py"
 
@@ -154,7 +156,7 @@ rule track_with_btrack:
 #        "3a_tracking_info/{subfolder}/track_info.npy"
 #    shell:
 #        "ln -s {input} {output}" #comment in this line or the one below
-#        "cp {input} {output}"        
+#        "cp {input} {output}"    #comment in this line or the one above
 
 rule convert_btrack_info_to_images:
     input:
