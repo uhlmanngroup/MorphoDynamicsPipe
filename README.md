@@ -1,5 +1,7 @@
 # MorphoDynamicsPipe
-A library that uses snakemake to run a morphodynamics analysis on image of cells. It includes segmentation via cellpose, StarDist or micro-SAM and tracking via btrack. MorpholoDynamics features are calculated with  
+A library that uses snakemake to run a morphodynamics analysis on image of cells. 
+It includes segmentation via cellpose, StarDist or micro-SAM and tracking via btrack. 
+MorpholoDynamics features are calculated with scikit-image, CPDA chord measurement and other custom functions.
 
 ## Installation
 Installation requires a mamba or conda package manager. Please go here for more details:
