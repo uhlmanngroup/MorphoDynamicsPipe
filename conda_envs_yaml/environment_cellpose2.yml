@@ -3,7 +3,7 @@
 # miniforge
 
 ## somehow this does not work with stardist.....
-name: cellpose1
+name: cellpose2
 channels:
 #  - defaults
   - conda-forge
@@ -18,10 +18,9 @@ dependencies:
   - ipython
   - pytorch
   - numpy=1.26.4
+  - scikit-image
 #  - pytorch-cuda=12.4
-#  - scikit-image
 
   - pip:
-#    - tensorflow[and-cuda]
-    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
+    - cellpose[gui] #Cellpose recommend python 3.8, but python 3.9 and 3.10 will likely work as well
 
