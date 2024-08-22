@@ -51,7 +51,7 @@ Segmentation and tracking results can be viewed in napari (installed with the co
 
 Morphodynamics results can be found in the folders `4a_instantaneous_cell_morphodynamics/` and `4b_time_averaged_cell_morphodynamics/`.
 
-Example results can be found in the folder `MorphoDynamicsPipe/examples/`
+Example results can be found in the folder `MorphoDynamicsPipe/example/`
 
 ## Citations
 This library relies on: \
