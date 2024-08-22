@@ -81,35 +81,35 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    script:
 #        "scripts/run_stardist.py"
 
-#rule segment_with_micro_sam:
-#    input:
-#        "1_data/{subfolder_filename}.tif",
-#        get_equivalent_nuclear_segmentation
-#    output:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    retries: 10
-#    conda:
-##       the line below automatically installs the conda environment for this rule
-#        os.path.join("conda_envs_yaml", "environment_microsam0_dev.yml")
-##      the line below should be alternatively commented in if you have the conda environment already installed
-##        "microsam0"
-#    script:
-#        "scripts/run_microsam.py"
-
-# comment this in to run cellpose on a single channel, eg. celltracker alone
-rule segment_with_cellpose_nucs:
+rule segment_with_micro_sam:
     input:
         "1_data/{subfolder_filename}.tif",
+        get_equivalent_nuclear_segmentation
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
     conda:
 #       the line below automatically installs the conda environment for this rule
-        os.path.join("conda_envs_yaml", "environment_cellpose2_dev.yml")
-#       the line below should be alternatively commented in if you have the conda environment already installed
-##        "cellpose2"
+        os.path.join("conda_envs_yaml", "environment_microsam0_dev.yml")
+#      the line below should be alternatively commented in if you have the conda environment already installed
+#        "microsam0"
     script:
-        "scripts/run_cellpose_nucs.py"
+        "scripts/run_microsam.py"
+
+# comment this in to run cellpose on a single channel, eg. celltracker alone
+#rule segment_with_cellpose_nucs:
+#    input:
+#        "1_data/{subfolder_filename}.tif",
+#    output:
+#        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
+#    conda:
+##       the line below automatically installs the conda environment for this rule
+#        os.path.join("conda_envs_yaml", "environment_cellpose2_dev.yml")
+##       the line below should be alternatively commented in if you have the conda environment already installed
+##        "cellpose2"
+#    script:
+#        "scripts/run_cellpose_nucs.py"
 
 # comment this in to run cellpose on double channel, e.g. celltracker with nucs
 #rule segment_with_cellpose_celltracker_with_nucs:
