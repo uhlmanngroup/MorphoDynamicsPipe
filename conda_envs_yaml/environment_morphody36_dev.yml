@@ -31,7 +31,7 @@ dependencies:
   # possibly add jupyterlab_kernel_usage (with an add-on) or jupyter-resource-usage
   - matplotlib
   - microfilm #this includes matplotlib-scalebar, and could be useful for quick plotting of multichannel things
-  - micro_sam
+#  - micro_sam
   - napari=0.4.18 #this has to be this version otherwise on newer versions you get segfaults on labels
   # when you try and combine with packages that use numba
   # I think it was napari 0.4.19post1 that was the problem
@@ -46,10 +46,10 @@ dependencies:
   - pillow
   - pims
   - pystackreg
-  - python-elf
+#  - python-elf
   - pyqt
   - pytables
-  - pytorch
+#  - pytorch
 #  - pytorch-cuda=12.4
   - readlif
   - requests
@@ -57,11 +57,11 @@ dependencies:
   - scikit-image
   - scikit-learn
 #  - singularity
-  - stardist
-  - tensorflow
-  - torch_em
-  - torchaudio
-  - torchvision
+#  - stardist
+#  - tensorflow
+#  - torch_em
+#  - torchaudio
+#  - torchvision
   - tqdm
   - umap-learn
   - xlrd
@@ -75,7 +75,7 @@ dependencies:
 #    - tensorflow[and-cuda]
 #    - morphodynamics
 #    - git+https://github.com/guiwitz/napari-morphodynamics.git
-    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
+#    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
     - aicspylibczi
     - btrack
 #    - czitools #this package changes a lot of tools from the conda environment, so 

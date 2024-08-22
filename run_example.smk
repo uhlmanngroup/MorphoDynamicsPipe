@@ -23,7 +23,7 @@ def get_stabilization_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "1_data/" + wildcards.subfolder
     list_of_stabilized_images = [os.path.join(this_root_sub, each) for 
-        each in natsort.natsorted(os.listdir(this_original_sub))]
+        each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
     return list_of_stabilized_images
 
 def get_image_stack_from_subfolderfilename(wildcards):
@@ -38,7 +38,7 @@ def get_image_stack_from_subfolderfilename(wildcards):
 #        get_stabilization_files_list_from_subfolder
 #    output:
 #        "1b_stabilize/{subfolder}/{filename}.tif"
-#        ["1b_stabilize/{subfolder}/{filename}.txt".format(filename=filename) for filename in os.listdir("1b_stabilize/{subfolder}/")]
+#        ["1b_stabilize/{subfolder}/{filename}.txt".format(filename=filename) for filename in [each2 for each2 in os.listdir("1b_stabilize/{subfolder}/") if not each2.startswith('.')]]
 #        "1b_stabilize/{subfolder}/image_stack.npy"
 #    script:
 #        "scripts/run_pystackreg.py"
@@ -65,6 +65,7 @@ def get_equivalent_nuclear_segmentation(wildcards):
     return [new_fullpath]
 
 #####
+# comment in exactly one of the 4 following segmentation rules
 
 #rule segment_with_stardist:
 #    input:
@@ -72,6 +73,11 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
 #    retries: 10
+#    conda:
+##       the line below automatically installs the conda environment for this rule
+#        os.path.join("conda_envs_yaml", "environment_stardist0_dev.yml")
+##      the line below should be alternatively commented in if you have the conda environment already installed
+##        "stardist0"
 #    script:
 #        "scripts/run_stardist.py"
 
@@ -82,6 +88,11 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
 #    retries: 10
+#    conda:
+##       the line below automatically installs the conda environment for this rule
+#        os.path.join("conda_envs_yaml", "environment_microsam0_dev.yml")
+##      the line below should be alternatively commented in if you have the conda environment already installed
+##        "microsam0"
 #    script:
 #        "scripts/run_microsam.py"
 
@@ -92,6 +103,11 @@ rule segment_with_cellpose_nucs:
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
+    conda:
+#       the line below automatically installs the conda environment for this rule
+        os.path.join("conda_envs_yaml", "environment_cellpose2_dev.yml")
+#       the line below should be alternatively commented in if you have the conda environment already installed
+##        "cellpose2"
     script:
         "scripts/run_cellpose_nucs.py"
 
@@ -102,6 +118,11 @@ rule segment_with_cellpose_nucs:
 #        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
+#    conda:
+##       the line below automatically installs the conda environment for this rule
+#        os.path.join("conda_envs_yaml", "environment_cellpose2_dev.yml")
+##       the line below should be alternatively commented in if you have the conda environment already installed
+##        "cellpose2"
 #    retries: 10
 #    script:
 #        "scripts/run_cellpose_celltracker_with_nucs.py"
@@ -113,7 +134,7 @@ def get_segmentation_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
     this_root_sub = "2_segmentation/" + wildcards.subfolder
     list_of_segmented_images = [os.path.join(this_root_sub, each) for 
-        each in natsort.natsorted(os.listdir(this_original_sub))]
+        each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
     return list_of_segmented_images
 
 def get_tracking_info_from_subfolderfilename(wildcards):
@@ -187,7 +208,7 @@ def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
 #    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
     this_root_sub = "3c_tracking_images_filtered/" + wildcards.subfolder
     list_of_segmented_images = [os.path.join(this_root_sub, each)
-        for each in natsort.natsorted(os.listdir(this_original_sub))]
+        for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
     return list_of_segmented_images
 
 def get_list_of_input_subfolders(wildcards):
