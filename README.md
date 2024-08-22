@@ -31,7 +31,7 @@ The files must be tiffs with T=[NUMBER].tiff or T=[NUMBER].tif at the end.
 The T= number must run from 0 and increment by one across all the files in each folder. There is no limit on the number of folders or files. 
 
 An example dataset can be found in `MorphoDynamicsPipe/example`.
-To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to 'MorphoDynamicsPipe/1_data', including the the subfolders and files. 
+To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to `MorphoDynamicsPipe/1_data`, including the the subfolders and files. 
 
 ## Execution
 Then run `snakemake -s run_example.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going` 
@@ -50,6 +50,8 @@ Then run as normal.
 Segmentation and tracking results can be viewed in napari (installed with the conda environment) from folder `5_tracking_images_outlines/`.
 
 Morphodynamics results can be found in the folders `4a_instantaneous_cell_morphodynamics/` and `4b_time_averaged_cell_morphodynamics/`.
+
+Example results can be found in the folder `MorphoDynamicsPipe/examples/`
 
 ## Citations
 This library relies on: \
