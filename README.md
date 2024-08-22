@@ -59,4 +59,4 @@ CPDA curvature measurement https://ieeexplore.ieee.org/document/4657455 \
 among other commonly used packages. 
 
 This package is part of the PLAST_CELL project. \
-More on this details are here: https://plastcell.eu/
+More details on this are here: https://plastcell.eu/
