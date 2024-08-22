@@ -1,0 +1,32 @@
+# conda version 24.7.1
+# mamba version 1.5.8
+# miniforge
+
+## somehow this does not work with stardist.....
+name: microsam0
+channels:
+#  - defaults
+  - pytorch
+  - nvidia
+  - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
+
+dependencies:
+  - python
+  - pip
+
+  - bioconda::snakemake
+  - ipython
+  - matplotlib
+  - micro_sam
+  - numpy
+  - python-elf
+  - pytorch 
+  - scikit-image
+  - torch_em
+  - tqdm
+
+
+  - pip:
+
+
