@@ -30,6 +30,9 @@ where the folder1, folder2, filename1 and filename2 (etc...) can be anything, an
 The files must be tiffs with T=[NUMBER].tiff or T=[NUMBER].tif at the end. 
 The T= number must run from 0 and increment by one across all the files in each folder. There is no limit on the number of folders or files. 
 
+An example dataset can be found in `MorphoDynamicsPipe/example`.
+To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to 'MorphoDynamicsPipe/1_data', including the the subfolders and files. 
+
 ## Execution
 Then run `snakemake -s run_example.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going` 
 when in the MorphoDynamicsPipe folder.
@@ -57,6 +60,9 @@ btrack https://github.com/quantumjot/btrack \
 Scikit-image https://github.com/scikit-image/scikit-image \
 CPDA curvature measurement https://ieeexplore.ieee.org/document/4657455 \
 among other commonly used packages. 
+
+Example data is taken from Broad Bioimage Benchmark Collection (Broad Institute), 
+simulated HL60 cells (from the Cell Tracking Challenge), Accession number BBBC035, Version 1. https://bbbc.broadinstitute.org/BBBC035
 
 This package is part of the PLAST_CELL project. \
 More details on this are here: https://plastcell.eu/
