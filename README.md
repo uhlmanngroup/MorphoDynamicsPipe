@@ -58,4 +58,5 @@ Scikit-image https://github.com/scikit-image/scikit-image \
 CPDA curvature measurement https://ieeexplore.ieee.org/document/4657455 \
 among other commonly used packages. 
 
-This package is part of the PLAST_CELL project. More details here: https://www.ebi.ac.uk/about/news/technology-and-innovation/plast-cell/
+This package is part of the PLAST_CELL project. \
+More on this details are here: https://plastcell.eu/
