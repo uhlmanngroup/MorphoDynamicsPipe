@@ -12,12 +12,14 @@ After installing conda or mamba, close this repository.
 
 Then navigate to the MorphoDynamicsPipe folder. 
 
-Then run `mamba env create -f conda_envs_yaml/environment_morphody35_dev.yml`
+Then run `mamba env create -f conda_envs_yaml/environment_morphody36_dev.yml`
 (mamba can also be replaced by conda here)
 
 then
 
-`conda activate morphody35`
+`conda activate morphody36`
+
+Other conda environments (such as for cellpose) will be installed automatically by snakemake in the `MorphoDynamicsPipe/.snakemake/conda` folder
 
 ## Data setup
 To add data, create a folder called `1_data` inside the main MorphoDynamicsPipe folder. 
