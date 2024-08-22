@@ -201,3 +201,4 @@ OLD*
 run.smk
 1_data_temp/
 .DS_Store
+!example/*

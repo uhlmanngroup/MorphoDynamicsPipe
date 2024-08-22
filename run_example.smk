@@ -173,6 +173,8 @@ rule filter_cells_after_tracking:
         get_tracking_info_from_subfolderfilename,
     output:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
+    params:
+        number_of_frames_to_remove_object = 0
     script:
         "scripts/filter_short_lived_cells_after_tracking.py"
 

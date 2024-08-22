@@ -41,8 +41,11 @@ this_output = snakemake.output[0]
 
 tracking_info = this_input[0]
 segmentation_relabeled_names = this_input[1:]
-cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
-                                   'cycleTime', ending='/', mydtype=int)
+try:
+    cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
+                                    'cycleTime', ending='/', mydtype=int)
+except:
+    cycleTime = 1
 
 #print("tracking_info", tracking_info)
 #print("segmentation", segmentation)

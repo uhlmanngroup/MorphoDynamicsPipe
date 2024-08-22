@@ -4,11 +4,12 @@ import skimage
 import numpy as np
 this_input = list(snakemake.input)
 this_output = list(snakemake.output)
+number_of_frames_to_remove_object = snakemake.params[0] #max number of consecutive frames for an object to be removed
 
 im = skimage.io.imread(this_input[0])
 track_info= np.load(this_input[1])
 tracked_ids = track_info[:,0].astype(int)
-number_of_frames_to_remove_object = 8 #max number of consecutive frames for an object to be removed
+
 ids_to_remove = np.bincount(tracked_ids) <= number_of_frames_to_remove_object
 ids_in_current_image = np.unique(im)
 for each_id_in_current_image in ids_in_current_image:

@@ -40,8 +40,11 @@ data_name = this_input[0]
 maximum_common_time_name = this_input[1]
 segmentation_relabeled_names = this_input[2:]
 image_names = [each.replace('3b_tracking_images', '1_data') for each in segmentation_relabeled_names]
-cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
-                                   'cycleTime', ending='/', mydtype=int)
+try:
+    cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
+                                    'cycleTime', ending='/', mydtype=int)
+except:
+    cycleTime = 1
 
 #print("tracking_info", tracking_info)
 #print("segmentation", segmentation)
