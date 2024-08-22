@@ -1,0 +1,27 @@
+# conda version 24.7.1
+# mamba version 1.5.8
+# miniforge
+
+## somehow this does not work with stardist.....
+name: cellpose1
+channels:
+#  - defaults
+  - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
+  - pytorch
+  - nvidia
+dependencies:
+  - python
+  - pip
+
+  - bioconda::snakemake
+  - ipython
+  - pytorch
+  - numpy=1.26.4
+#  - pytorch-cuda=12.4
+#  - scikit-image
+
+  - pip:
+#    - tensorflow[and-cuda]
+    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
+
