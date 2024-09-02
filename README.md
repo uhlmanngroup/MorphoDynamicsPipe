@@ -7,7 +7,7 @@ MorpholoDynamics features are calculated with scikit-image, CPDA chord measureme
 Installation requires a mamba or conda package manager. Please go here for more details:
 https://github.com/conda-forge/miniforge
 
-After installing conda or mamba, close this repository.
+After installing conda or mamba, clone this repository.
 `git clone https://github.com/uhlmanngroup/MorphoDynamicsPipe`
 
 Then navigate to the MorphoDynamicsPipe folder. 
