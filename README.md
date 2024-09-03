@@ -36,7 +36,7 @@ An example dataset can be found in `MorphoDynamicsPipe/example`.
 To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to `MorphoDynamicsPipe/1_data`, including the the subfolders and files. 
 
 ## Execution
-Then run `snakemake -s run_example.smk --cores='all' --sdm conda --conda-frontend mamba --keep-going` 
+Then run `snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going` 
 when in the MorphoDynamicsPipe folder.
 
 To change which algorithm is used for segmentation (default: cellpose), open the run_example.smk file, 
