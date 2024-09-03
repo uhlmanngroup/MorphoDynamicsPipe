@@ -10,7 +10,7 @@ https://github.com/conda-forge/miniforge
 After installing conda or mamba, clone this repository.
 `git clone https://github.com/uhlmanngroup/MorphoDynamicsPipe`
 
-Then navigate to the MorphoDynamicsPipe folder. 
+Then navigate to the MorphoDynamicsPipe folder in a terminal or commmand prompt that has conda activated. 
 
 Then run `mamba env create -f conda_envs_yaml/environment_morphody36_dev.yml`
 (mamba can also be replaced by conda here)
