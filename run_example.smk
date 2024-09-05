@@ -169,6 +169,9 @@ rule track_with_btrack:
         get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
+    conda: 
+        "conda_envs_yaml/environment_btrack4_dev.yml"
+#        "btrack4"
     script:
         "scripts/run_btrack_to_info.py"
 
@@ -189,8 +192,6 @@ rule convert_btrack_info_to_images:
         get_tracking_info_from_subfolderfilename
     output:
         "3b_tracking_images/{subfolder_filename}.tif"
-    conda:
-        "conda_envs_yaml/environment_btrack4_dev.yml"
     script:
         "scripts/convert_btrack_info_to_images.py"
 
