@@ -189,6 +189,8 @@ rule convert_btrack_info_to_images:
         get_tracking_info_from_subfolderfilename
     output:
         "3b_tracking_images/{subfolder_filename}.tif"
+    conda:
+        "conda_envs_yaml/environment_btrack4_dev.yml"
     script:
         "scripts/convert_btrack_info_to_images.py"
 

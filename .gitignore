@@ -203,3 +203,4 @@ run.smk
 .DS_Store
 !example/*
 example/.DS_Store
+docker/
