@@ -2,6 +2,8 @@
 # The example images must be copied to 1_data folder before running this pipeline.
 # uses morphody36 conda environment
 # snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
+# or on slurm
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
 
 import os
 import natsort
