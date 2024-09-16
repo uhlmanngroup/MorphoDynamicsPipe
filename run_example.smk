@@ -1,9 +1,9 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
 # uses morphody36 conda environment
-# snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
+# snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake
 # or on slurm
-# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake"
 
 import os
 import natsort
@@ -15,6 +15,9 @@ both.filename
 
 rule all:
     input:
+#        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
+#        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
+#        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
@@ -171,9 +174,8 @@ rule track_with_btrack:
         get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
-    conda: 
-        "conda_envs_yaml/environment_btrack4_dev.yml"
-#        "btrack4"
+    container:
+        "docker://spectralnanodiamond/btrack:latest"
     script:
         "scripts/run_btrack_to_info.py"
 

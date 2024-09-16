@@ -3,7 +3,7 @@ import numpy as np
 import btrack
 import os
 import pandas as pd
-from aicsimageio import AICSImage
+#from aicsimageio import AICSImage
 import matplotlib.pyplot as plt
 from tqdm import trange
 import skimage
