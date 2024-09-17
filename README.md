@@ -41,7 +41,7 @@ Please change `windows_and_cpu_only = False` to `windows_and_cpu_only = True`.
 If you are not on Windows then you can ignore this step. 
 If you are on Windows but you have a GPU then you can ignore this step. 
 
-Then run `snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake` 
+Then run `snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going` 
 when in the MorphoDynamicsPipe folder.
 
 To change which algorithm is used for segmentation (default: cellpose), open the run_example.smk file, 
