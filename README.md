@@ -60,6 +60,8 @@ Morphodynamics results can be found in the folders `4a_instantaneous_cell_morpho
 
 Example results can be found in the folder `MorphoDynamicsPipe/example/`
 
+macOS seems to produce slightly different segmentation results. 
+
 ## Citations
 This library relies on: \
 Cellpose https://github.com/MouseLand/cellpose \
