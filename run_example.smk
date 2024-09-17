@@ -15,8 +15,8 @@ import natsort
 import re
 import platform
 print(platform.system())
-if platform.system() == 'Windows':
-    btrack_conda_env = "conda_envs_yaml/environment_btrackwindows0_dev.yml"
+if platform.system() == 'Windows' or 'Darwin':
+    btrack_conda_env = "conda_envs_yaml/environment_btrackpip0_dev.yml"
 else:
     btrack_conda_env = "conda_envs_yaml/environment_btrack4_dev.yml"
 

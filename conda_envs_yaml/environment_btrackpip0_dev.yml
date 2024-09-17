@@ -2,7 +2,7 @@
 # mamba version 1.5.9
 # miniforge
 
-name: btrackwindows0
+name: btrackpip0
 channels:
 #  - defaults
   - conda-forge
