@@ -1,9 +1,14 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
-# uses morphody36 conda environment
+# uses morphody39 conda environment
 # snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
 # or on slurm
 # sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
+windows_and_cpu_only = False
+if windows_and_cpu_only:
+    cellpose_conda_env =  "conda_envs_yaml/environment_cellposecpu0_dev.yml"
+else:
+    cellpose_conda_env = "conda_envs_yaml/environment_cellpose2_dev.yml"
 
 import os
 import natsort
@@ -14,6 +19,7 @@ if platform.system() == 'Windows':
     btrack_conda_env = "conda_envs_yaml/environment_btrackwindows0_dev.yml"
 else:
     btrack_conda_env = "conda_envs_yaml/environment_btrack4_dev.yml"
+
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
@@ -21,6 +27,7 @@ both.filename
 
 rule all:
     input:
+    #commenting these lines in and out will control how many steps the pipeline performs
 #        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
@@ -117,9 +124,10 @@ rule segment_with_cellpose_nucs:
     retries: 10
     conda:
 ##       the line below automatically installs the conda environment for this rule
-        "conda_envs_yaml/environment_cellpose2_dev.yml"
+#        "conda_envs_yaml/environment_cellpose2_dev.yml"
 ##       the line below should be alternatively commented in if you have the conda environment already installed
 ##        "cellpose2"
+        cellpose_conda_env
     script:
         "scripts/run_cellpose_nucs.py"
 

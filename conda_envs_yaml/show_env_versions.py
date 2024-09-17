@@ -14,4 +14,4 @@ for env in envs:
     print(command)
     subprocess.run(command, shell = True)
 
-#conda list -n morphody37 > /nfs/research/uhlmann/bwoodhams/plast_cell/2024-08-22_making_example/MorphoDynamicsPipe/conda_envs_yaml/morphody37.txt
+#conda list -n morphody39 > /nfs/research/uhlmann/bwoodhams/plast_cell/2024-08-22_making_example/MorphoDynamicsPipe/conda_envs_yaml/morphody39.txt

@@ -12,12 +12,12 @@ After installing conda or mamba, clone this repository.
 
 Then navigate to the MorphoDynamicsPipe folder in a terminal or commmand prompt that has conda activated. 
 
-Then run `mamba env create -f conda_envs_yaml/environment_morphody36_dev.yml`
+Then run `mamba env create -f conda_envs_yaml/environment_morphody39_dev.yml`
 (mamba can also be replaced by conda here)
 
 then
 
-`conda activate morphody36`
+`conda activate morphody39`
 
 Other conda environments (such as for cellpose) will be installed automatically by snakemake in the `MorphoDynamicsPipe/.snakemake/conda` folder
 
@@ -36,6 +36,11 @@ An example dataset can be found in `MorphoDynamicsPipe/example`.
 To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to `MorphoDynamicsPipe/1_data`, including the the subfolders and files. 
 
 ## Execution
+If you are on Windows and do not have a GPU, then open the snakemake file and make a small change. 
+Please change `windows_and_cpu_only = False` to `windows_and_cpu_only = True`. 
+If you are not on Windows then you can ignore this step. 
+If you are on Windows but you have a GPU then you can ignore this step. 
+
 Then run `snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake` 
 when in the MorphoDynamicsPipe folder.
 
