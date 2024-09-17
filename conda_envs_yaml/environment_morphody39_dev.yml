@@ -32,6 +32,7 @@ dependencies:
   - lxml
   - matplotlib
   - microfilm #this includes matplotlib-scalebar, and could be useful for quick plotting of multichannel things
+#  - moviepy
   - napari=0.4.18 #this has to be this version otherwise on newer versions you get segfaults on labels
   # when you try and combine with packages that use numba
   # I think it was napari 0.4.19post1 that was the problem
@@ -62,15 +63,11 @@ dependencies:
   - xmlschema
   - xmltodict
 
-#lxml
 # - urllib3=2.0.7 #this is the version that morphodynamics tries to install, replacing another one if not specified
   - pip:
-#    - tensorflow[and-cuda]
 #    - morphodynamics
 #    - git+https://github.com/guiwitz/napari-morphodynamics.git
-#    - cellpose[gui] #We recommend python 3.8, but python 3.9 and 3.10 will likely work as well
     - aicspylibczi
-#    - btrack
 #    - czitools #this package changes a lot of tools from the conda environment, so 
 #       if I need it I will have to solve for this later or put it in a different environment
     - ipynb
