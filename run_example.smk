@@ -1,13 +1,19 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
 # uses morphody36 conda environment
-# snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake
+# snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
 # or on slurm
-# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going --use-snakemake"
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
 
 import os
 import natsort
 import re
+import platform
+print(platform.system())
+if platform.system() == 'Windows':
+    btrack_conda_env = "conda_envs_yaml/environment_btrackwindows0_dev.yml"
+else:
+    btrack_conda_env = "conda_envs_yaml/environment_btrack4_dev.yml"
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
@@ -174,8 +180,10 @@ rule track_with_btrack:
         get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
-    container:
-        "docker://spectralnanodiamond/btrack:latest"
+#    container:
+#        "docker://spectralnanodiamond/btrack:latest"
+    conda:
+        btrack_conda_env
     script:
         "scripts/run_btrack_to_info.py"
 

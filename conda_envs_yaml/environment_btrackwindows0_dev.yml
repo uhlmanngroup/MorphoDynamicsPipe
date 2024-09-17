@@ -1,0 +1,22 @@
+# conda version 24.7.1
+# mamba version 1.5.9
+# miniforge
+
+name: btrackwindows0
+channels:
+#  - defaults
+  - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
+
+dependencies:
+  - python=3.11.9
+  - pip=24.2
+
+  - pydantic = 1.10.14
+  - matplotlib-inline = 0.1.7
+  - pandas = 2.2.2
+  - freetype = 2.12.1
+  - freetype-py = 2.5.1
+  - pip:
+    - btrack==0.4.6
+
