@@ -19,13 +19,14 @@ then
 
 `conda activate morphody40`
 
-Other conda environments (such as for cellpose) will be installed automatically by snakemake in the `MorphoDynamicsPipe/.snakemake/conda` folder
+Other conda environments (such as for cellpose) will be installed automatically by snakemake in
+the default folder for your conda setup. 
 
 ## Data setup
 To add data, create a folder called `1_data` inside the main MorphoDynamicsPipe folder. 
 Put data in the in the format 
-`1_data/folder1/filename1_T=0.tif`, `1_data/folder1/filename1_T=1.tif`, `1_data/folder1/filename1_T=2.tif`, 
-`1_data/folder2/filename2_T=0.tif`, `1_data/folder2/filename2_T=1.tif`, `1_data/folder2/filename2_T=2.tif`, 
+`1_data/folder1/filename1_T=000.tif`, `1_data/folder1/filename1_T=001.tif`, `1_data/folder1/filename1_T=002.tif`, 
+`1_data/folder2/filename2_T=000.tif`, `1_data/folder2/filename2_T=001.tif`, `1_data/folder2/filename2_T=002.tif`, 
 etc...
 
 where the folder1, folder2, filename1 and filename2 (etc...) can be anything, and filename1 and filename2 (etc...) do not have to be consistent within each subfolder. 
@@ -51,6 +52,11 @@ To use nuclei for tracking whole cells, first segment and track nuclei in a sepa
 Comment out `rule segment_with_cellpose_nucs` and comment in `rule segment_with_cellpose_celltracker_with_nucs`. 
 Comment out `rule track_with_btrack` and comment in `rule symlink_to_btrack_info` and comment in either the `ln -s` line or the `cp` line (but not both).
 Then run as normal. 
+
+If you would like to run the pipeline on another project, simply copy the `.smk` file 
+and the `scripts/` folder (including its files) next to another `1_data` 
+e.g. `project2/1_data/` , `project2/run_exmaple.smk` and `project2/scripts`. 
+Then at the command line, navigate to the project2 folder and run the snakemake command as above.
 
 ## Results
 

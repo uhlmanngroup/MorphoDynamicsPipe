@@ -1,25 +1,63 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
-# uses morphody39 conda environment
+# uses morphody40 conda environment
 # snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
 # or on slurm
-# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:v100:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
-windows_and_cpu_only = False
-if windows_and_cpu_only:
-    cellpose_conda_env =  "conda_envs_yaml/environment_cellposecpu0_dev.yml"
-else:
-    cellpose_conda_env = "conda_envs_yaml/environment_cellpose2_dev.yml"
-
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
 import os
 import natsort
 import re
 import platform
-print(platform.system())
-if platform.system() == 'Windows' or 'Darwin':
-    btrack_conda_env = "conda_envs_yaml/environment_btrackpip0_dev.yml"
-else:
-    btrack_conda_env = "conda_envs_yaml/environment_btrack4_dev.yml"
+import subprocess
+print('My platform is: ', platform.system())
 
+# this next line should be modified to True if you are using windows and CPU only
+windows_and_cpu_only = False
+# see a few lines below for how this is used
+####################################################################################################
+#Setting environments to use
+list_of_conda_envs = subprocess.run('conda env list', shell=True, capture_output=True).stdout.decode().split('\n')
+names_of_conda_envs = ''.join(list_of_conda_envs)
+
+# Installing or setting the cellpose environment to use
+if windows_and_cpu_only:
+    cellpose_conda_env = "cellposecpu0"
+    if 'cellposecpu0' not in names_of_conda_envs:
+        print('Creating cellposecpu0 environment')
+        try:
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_cellposecpu0_dev.yml', shell=True)
+        except:
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_cellposecpu0_dev.yml', shell=True)
+else:
+    cellpose_conda_env = "cellpose2"
+    if 'cellpose2' not in names_of_conda_envs: 
+        print('Creating cellpose2 environment')
+        try:
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_cellpose2_dev.yml', shell=True)
+        except:
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_cellpose2_dev.yml', shell=True)
+
+# Installing or setting the btrack environment to use
+if platform.system() == 'Windows' or platform.system() == 'Darwin':
+    print('In Windows or Mac options')
+    btrack_conda_env = "btrackpip0"
+    if 'btrackpip0' not in names_of_conda_envs:
+        print('Creating btrackpip0 environment')
+        try:
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_btrackpip0_dev.yml', shell=True)
+        except:
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_btrackpip0_dev.yml', shell=True)
+else:
+    btrack_conda_env = "btrack4"
+    if 'btrack4' not in names_of_conda_envs:
+        print('Creating btrack4 environment')
+        try:
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_btrack4_dev.yml', shell=True)
+        except:
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_btrack4_dev.yml', shell=True)
+
+####################################################################################################
+# Defining files to create
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
