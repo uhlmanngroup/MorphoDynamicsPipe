@@ -27,6 +27,7 @@ if windows_and_cpu_only:
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
         except:
+            print('Mamba unavailable, trying conda')
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
 else:
     cellpose_conda_env = "morphody_cellpose2"
@@ -35,6 +36,7 @@ else:
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
         except:
+            print('Mamba unavailable, trying conda')
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
 
 # Installing or setting the btrack environment to use
@@ -46,6 +48,7 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
         except:
+            print('Mamba unavailable, trying conda')
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
 else:
     btrack_conda_env = "morphody_btrack4"
@@ -54,6 +57,7 @@ else:
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
         except:
+            print('Mamba unavailable, trying conda')
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
 
 ####################################################################################################
