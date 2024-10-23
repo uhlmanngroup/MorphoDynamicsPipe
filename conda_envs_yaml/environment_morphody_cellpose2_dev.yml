@@ -3,7 +3,7 @@
 # miniforge
 
 ## somehow this does not work with stardist.....
-name: cellpose2
+name: morphody_cellpose2
 channels:
 #  - defaults
   - conda-forge

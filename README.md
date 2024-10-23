@@ -20,7 +20,10 @@ then
 `conda activate morphody40`
 
 Other conda environments (such as for cellpose) will be installed automatically by snakemake in
-the default folder for your conda setup. 
+the default folder for your conda setup. These are currently called
+morphody_cellposecpu, morphody_cellpose, morphody_btrackpip, morphody_btrack. 
+Not all environments will be installed - only the ones relevant for the hardware you are using 
+(e.g. operating system, GPU availability). 
 
 ## Data setup
 To add data, create a folder called `1_data` inside the main MorphoDynamicsPipe folder. 

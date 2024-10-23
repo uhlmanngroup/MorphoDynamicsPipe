@@ -3,7 +3,7 @@
 # miniforge
 
 ## somehow this does not work with stardist.....
-name: cellposecpu0
+name: morphody_cellposecpu0
 channels:
 #  - defaults
   - conda-forge

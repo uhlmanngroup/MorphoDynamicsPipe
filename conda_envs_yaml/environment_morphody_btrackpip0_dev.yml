@@ -2,7 +2,7 @@
 # mamba version 1.5.9
 # miniforge
 
-name: btrackpip0
+name: morphody_btrackpip0
 channels:
 #  - defaults
   - conda-forge

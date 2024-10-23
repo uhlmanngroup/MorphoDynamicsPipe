@@ -21,40 +21,40 @@ names_of_conda_envs = ''.join(list_of_conda_envs)
 
 # Installing or setting the cellpose environment to use
 if windows_and_cpu_only:
-    cellpose_conda_env = "cellposecpu0"
-    if 'cellposecpu0' not in names_of_conda_envs:
-        print('Creating cellposecpu0 environment')
+    cellpose_conda_env = "morphody_cellposecpu0"
+    if 'morphody_cellposecpu0' not in names_of_conda_envs:
+        print('Creating morphody_cellposecpu0 environment')
         try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_cellposecpu0_dev.yml', shell=True)
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
         except:
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_cellposecpu0_dev.yml', shell=True)
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
 else:
-    cellpose_conda_env = "cellpose2"
-    if 'cellpose2' not in names_of_conda_envs: 
-        print('Creating cellpose2 environment')
+    cellpose_conda_env = "morphody_cellpose2"
+    if 'morphody_cellpose2' not in names_of_conda_envs: 
+        print('Creating morphody_cellpose2 environment')
         try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_cellpose2_dev.yml', shell=True)
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
         except:
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_cellpose2_dev.yml', shell=True)
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
 
 # Installing or setting the btrack environment to use
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
     print('In Windows or Mac options')
-    btrack_conda_env = "btrackpip0"
+    btrack_conda_env = "morphody_btrackpip0"
     if 'btrackpip0' not in names_of_conda_envs:
-        print('Creating btrackpip0 environment')
+        print('Creating morphody_btrackpip0 environment')
         try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_btrackpip0_dev.yml', shell=True)
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
         except:
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_btrackpip0_dev.yml', shell=True)
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
 else:
-    btrack_conda_env = "btrack4"
+    btrack_conda_env = "morphody_btrack4"
     if 'btrack4' not in names_of_conda_envs:
-        print('Creating btrack4 environment')
+        print('Creating morphody_btrack4 environment')
         try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_btrack4_dev.yml', shell=True)
+            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
         except:
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_btrack4_dev.yml', shell=True)
+            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
 
 ####################################################################################################
 # Defining files to create
