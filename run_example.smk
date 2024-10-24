@@ -43,7 +43,7 @@ else:
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
     print('In Windows or Mac options')
     btrack_conda_env = "morphody_btrackpip0"
-    if 'btrackpip0' not in names_of_conda_envs:
+    if 'morphody_btrackpip0' not in names_of_conda_envs:
         print('Creating morphody_btrackpip0 environment')
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
@@ -52,7 +52,7 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
 else:
     btrack_conda_env = "morphody_btrack4"
-    if 'btrack4' not in names_of_conda_envs:
+    if 'morphody_btrack4' not in names_of_conda_envs:
         print('Creating morphody_btrack4 environment')
         try:
             subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
@@ -165,11 +165,16 @@ rule segment_with_cellpose_nucs:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
     conda:
-##       the line below automatically installs the conda environment for this rule
-#        "conda_envs_yaml/environment_cellpose2_dev.yml"
-##       the line below should be alternatively commented in if you have the conda environment already installed
-##        "cellpose2"
         cellpose_conda_env
+    params:
+        {'model_type':'cyto3',
+        'restore_type':"denoise_cyto3",   #:None, 
+        'diameter':30.0, 
+        'flow_threshold':0.4, 
+        'cellprob_threshold':0, 
+        'normalize':{'percentile':[1, 99]},
+        'pretrained_model':'/example_file',
+        }
     script:
         "scripts/run_cellpose_nucs.py"
 
@@ -180,12 +185,18 @@ rule segment_with_cellpose_nucs:
 #        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
 #    output:
 #        "2_segmentation/{subfolder_filename}.tif"
-#    conda:
-##       the line below automatically installs the conda environment for this rule
-#        "conda_envs_yaml/environment_cellpose2_dev.yml"
-##       the line below should be alternatively commented in if you have the conda environment already installed
-##        "cellpose2"
 #    retries: 10
+#    conda:
+#        cellpose_conda_env
+#    params:
+#        {'model_type':'cyto3',
+#        'restore_type':"denoise_cyto3",   #:None, 
+#        'diameter':30.0, 
+#        'flow_threshold':0.4, 
+#        'cellprob_threshold':0, 
+#        'normalize':{'percentile':[1, 99]},
+#        'pretrained_model':'/example_file',
+#        }
 #    script:
 #        "scripts/run_cellpose_celltracker_with_nucs.py"
 
@@ -239,14 +250,15 @@ rule track_with_btrack:
 
 # comment in for celltracker version that relies on nuclei and out otherwise
 #rule symlink_to_btrack_info:
-#this rule will not work on windows without modification - need to change this later
+#choose one of the shell scripts to run depending on your operating system
 #    input:
 #        get_tracking_info_from_subfolder_nuclei_version
 #    output:
 #        "3a_tracking_info/{subfolder}/track_info.npy"
 #    shell:
-#        "ln -s {input} {output}" #comment in this line or the one below
-#        "cp {input} {output}"    #comment in this line or the one above
+#        "ln -rs {input} {output}" #mac / linux
+#        "cp {input} {output}"    #alternative mac / linux
+#        "python -c 'import os; os.symlink({input}, {output})'" #this hopefully works on windows
 
 rule convert_btrack_info_to_images:
     input:

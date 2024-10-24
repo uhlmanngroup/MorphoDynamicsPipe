@@ -16,6 +16,7 @@ use_GPU = core.use_gpu()
 
 this_input = list(snakemake.input)
 this_output = list(snakemake.output)
+myparams = list(snakemake.params)[0]
 
 im = skimage.io.imread(this_input[0])
 
@@ -23,12 +24,12 @@ im = skimage.io.imread(this_input[0])
 #2D_nuclei_confocal_no_preprocess/OLD_test/models/CP_20240422_135130')
 
 model = denoise.CellposeDenoiseModel(gpu=use_GPU, 
-                                     model_type="cyto3",
-             restore_type="denoise_cyto3", 
-#                                     pretrained_model=path_to_pretrained_model,
+                                     model_type=myparams['model_type'],
+             restore_type=myparams['restore_type'], 
+#                                     pretrained_model=myparams['pretrained_model'],
                                     )
 
-labels, _, _, _ = model.eval(im, diameter=30.0, flow_threshold=0.4, channels=[0, 0],
-    cellprob_threshold=0, normalize={'percentile':[1, 99]})
+labels, _, _, _ = model.eval(im, diameter=myparams['diameter'], flow_threshold=myparams['flow_threshold'], channels=[0, 0],
+    cellprob_threshold=myparams['cellprob_threshold'], normalize=myparams['normalize'])
 
 skimage.io.imsave(this_output[0], labels, check_contrast=False)
