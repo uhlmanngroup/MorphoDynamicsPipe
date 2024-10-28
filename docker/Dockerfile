@@ -1,8 +1,21 @@
-# run docker build . -t spectralnanodiamond/btrack --platform=linux/x86_64
+# 1
+# docker build . -t spectralnanodiamond/btrack --platform=linux/x86_64
+
+# 2
+# run docker run -it spectralnanodiamond/btrack
+#or
 # run docker run -it 124091824019489
+# or 
+# run docker run -it -p 8888:8888 spectralnanodiamond/btrack
+
+# 3
 # docker image push spectralnanodiamond/btrack:latest
 
-#FROM ubuntu:focal-20240530
+# To run jupyter notebook
+# run with port option above then
+# jupyter notebook --ip 0.0.0.0 --allow-root --no-browser
+# then http://127.0.0.1:8888 or http://localhost:8888/
+
 FROM ubuntu:22.04
 
 ARG MINIFORGE_NAME=Miniforge3
@@ -45,7 +58,11 @@ RUN apt-get update > /dev/null && \
     conda clean --force-pkgs-dirs --all --yes  && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
-RUN mamba install -y python=3.11.9 pydantic=1.10.14 btrack
+RUN mamba install -y python=3.11 matplotlib jupyterlab natsort jupyter notebook
+#pyqt napari-arboretum
+#pydantic=1.10.14 
+RUN pip install btrack
+#[napari]
 
 ENTRYPOINT ["tini", "--"]
 CMD [ "/bin/bash" ]

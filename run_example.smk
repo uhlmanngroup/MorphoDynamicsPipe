@@ -4,6 +4,7 @@
 # snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
 # or on slurm
 # sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
+# add --use-singularity to the above commands if you want to use singularity for btrack
 import os
 import natsort
 import re
@@ -40,6 +41,7 @@ else:
             subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
 
 # Installing or setting the btrack environment to use
+# There is also a singularity environment that can be commented in below as an alternative
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
     print('In Windows or Mac options')
     btrack_conda_env = "morphody_btrackpip0"
@@ -241,6 +243,11 @@ rule track_with_btrack:
         get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
+    params:
+        {'properties': ('area',),
+         'config_file': 'btrack_cell_config.json',
+         'optimize': True,
+        }
 #    container:
 #        "docker://spectralnanodiamond/btrack:latest"
     conda:

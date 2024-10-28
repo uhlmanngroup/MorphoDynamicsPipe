@@ -18,26 +18,26 @@ import pickle
 #this_input = sys.argv[1]
 #this_output = sys.argv[2]
 
-#this_input = list(snakemake.input)
+this_input = list(snakemake.input)
 this_output = snakemake.output[0]
+myparams = list(snakemake.params)[0]
 
 #print("this_input is in the python file ", this_input)
 #print('type ', type(this_input))
 
 #print("this_output is in the python file ", this_output)
 
-segmentation_files = list(snakemake.input)
-segmentation = np.array([skimage.io.imread(each) for each in segmentation_files])
+segmentation = np.array([skimage.io.imread(each) for each in this_input])
 #print(segmentation.shape)
 
 objects = btrack.utils.segmentation_to_objects(
-  segmentation, properties=('area', )
+  segmentation, properties=myparams['properties'],
 )
 
 with btrack.BayesianTracker() as tracker:
 
   # configure the tracker using a config file
-    tracker.configure('btrack_cell_config.json')
+    tracker.configure(myparams['config_file'])
 
   # append the objects to be tracked
     tracker.append(objects)
@@ -47,9 +47,14 @@ with btrack.BayesianTracker() as tracker:
 
   # track them (in interactive mode)
 #  tracker.track_interactive(step_size=100)
-    tracker.track(step_size= 100)
+    tracker.track(step_size = 100)
+    # The number of tracking steps to be taken before returning summary
+    # statistics. The tracking will be followed to completion, regardless
+    # of the step size provided.
 
   # generate hypotheses and run the global optimizer
+    if myparams['optimize']:
+      tracker.optimize()
 #    tracker.optimize()
 
   # store the data in an HDF5 file
