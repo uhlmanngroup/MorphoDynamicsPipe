@@ -5,6 +5,7 @@
 # or on slurm
 # sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
 # add --use-singularity to the above commands if you want to use singularity for btrack
+
 import os
 import natsort
 import re
@@ -250,6 +251,7 @@ rule track_with_btrack:
         }
 #    container:
 #        "docker://spectralnanodiamond/btrack:latest"
+#        "../../2024-08-22_making_example/MorphoDynamicsPipe/.snakemake/singularity/443cbde37592944ef7c547806b1792f4.simg"
     conda:
         btrack_conda_env
     script:
