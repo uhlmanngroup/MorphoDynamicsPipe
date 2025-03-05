@@ -76,9 +76,9 @@ rule all:
 #        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-#        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-#        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+#        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
 ####################################################################################################
 # Preprocessing

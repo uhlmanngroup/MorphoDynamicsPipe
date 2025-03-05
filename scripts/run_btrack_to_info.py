@@ -21,6 +21,7 @@ import pickle
 this_input = list(snakemake.input)
 this_output = snakemake.output[0]
 myparams = list(snakemake.params)[0]
+print('This_input', this_input)
 
 #print("this_input is in the python file ", this_input)
 #print('type ', type(this_input))
@@ -43,7 +44,7 @@ with btrack.BayesianTracker() as tracker:
     tracker.append(objects)
 
   # set the volume (Z axis volume limits default to [-1e5, 1e5] for 2D data)
-    tracker.volume = ((0, segmentation.shape[1]), (0, segmentation.shape[2]))
+    tracker.volume = ((0, segmentation.shape[2]), (0, segmentation.shape[1]))
 
   # track them (in interactive mode)
 #  tracker.track_interactive(step_size=100)
