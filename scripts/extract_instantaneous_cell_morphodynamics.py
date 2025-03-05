@@ -39,8 +39,10 @@ def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=
 this_input = list(snakemake.input)
 this_output = snakemake.output[0]
 
-tracking_info = this_input[0]
-segmentation_relabeled_names = this_input[1:]
+tracking_info = this_input.pop(0)
+segmentation_relabeled_names = this_input[0:int(len(this_input)/2)]
+images_names = this_input[int(len(this_input)/2):]
+
 try:
     cycleTime = getvaluefromstringbest(segmentation_relabeled_names[0], 
                                     'cycleTime', ending='/', mydtype=int)
@@ -54,6 +56,7 @@ except:
 
 data = np.load(tracking_info)
 seg_relabeled = np.array([skimage.io.imread(each) for each in segmentation_relabeled_names])
+images = np.array([skimage.io.imread(each) for each in images_names])
 
 if False:
     #this part should be set to true for testing on a small part of the dataset
@@ -64,6 +67,7 @@ if False:
         myfilter = np.logical_or(data[:,1] == i, myfilter)
     data = data[myfilter]
     seg_relabeled = seg_relabeled[list_of_images_to_keep]
+    images = images[list_of_images_to_keep]
 
 unique_cell_ids = np.unique(data[:,0])
 unique_frame_ids = np.unique(data[:,1])
@@ -113,11 +117,39 @@ def curvature(this_mask):
     except:
         return -1.0, -1.0, -1.0, -1.0, -1.0
 
+def is_on_edge2(this_image, df2, this_cellID):
+    frame_shape0 = df2.loc[this_cellID, 'frame_shape0'].values[0]
+    frame_shape1 = df2.loc[this_cellID, 'frame_shape1'].values[0]
+    bbox0 = df2.loc[this_cellID, 'bbox-0'].values[0]
+    bbox1 = df2.loc[this_cellID, 'bbox-1'].values[0]
+    bbox2 = df2.loc[this_cellID, 'bbox-2'].values[0]
+    bbox3 = df2.loc[this_cellID, 'bbox-3'].values[0]
+    
+    margin = 20
+    if bbox0 < margin:
+        test_area = this_image[0:bbox0, bbox1:bbox3]
+        if np.all(test_area == 0):
+            return 1
+    if bbox1 < margin:
+        test_area = this_image[bbox0:bbox2, 0:bbox1]
+        if np.all(test_area == 0):
+            return 1
+    if frame_shape0 - bbox2 < margin:
+        test_area = this_image[bbox2:, bbox1:bbox3]
+        if np.all(test_area == 0):
+            return 1
+    if frame_shape1 - bbox3 < margin:
+        test_area = this_image[bbox0:bbox2, bbox3:]
+        if np.all(test_area == 0):
+            return 1
+    return 0
+
 list_of_dataframes = []
 # This part of the code iterates over frames to capture cell information
 for this_frame_id in unique_frame_ids:
     try:
         this_frame = seg_relabeled[int(this_frame_id)]
+        this_image = images[int(this_frame_id)]
     except:
         print("Error in frame ", this_frame_id)
         continue
@@ -148,6 +180,7 @@ for this_frame_id in unique_frame_ids:
             df2.loc[this_cellID, 'track_pos1'] = -1
         
         df2.loc[this_cellID, 'number_1px_away'] = int(get_number_of_neighbors(this_cellID, this_frame, pixel_range=1))
+        df2.loc[this_cellID, 'is_on_edge2'] = is_on_edge2(this_image, df2, this_cellID)
 #        df2.loc[this_cellID, 'number_of_adjacent_objects'] = mygraph.degree(this_cellID)
 
     list_of_dataframes.append(df2)
