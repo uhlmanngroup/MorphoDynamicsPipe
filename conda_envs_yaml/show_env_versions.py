@@ -5,13 +5,17 @@ import os
 import subprocess
 
 directory_out = os.path.abspath('.')
-directory_in = os.path.abspath('../.snakemake/conda/')
+directory_in = os.path.abspath('.')
 print(os.listdir(directory_in))
-envs = [each.replace('.yaml', '') for each in os.listdir(directory_in) if each.endswith('yaml')]
+envs = [each.replace('_dev.yml', '').replace('environment_', '') for each in os.listdir(directory_in) if each.endswith('yml')]
 envs
 for env in envs:
-    command = 'conda list -p ' + os.path.join(directory_in, env) + ' > ' + os.path.join(directory_out, env) + '.txt'
-    print(command)
-    subprocess.run(command, shell = True)
+    try:
+        command = 'conda list -n ' + env + ' > ' + os.path.join(directory_out, env) + '.txt'
+        print(command)
+        subprocess.run(command, shell = True)
+    except:
+        print('Failed to run command: ' + command)
+        continue
 
 #conda list -n morphody39 > /nfs/research/uhlmann/bwoodhams/plast_cell/2024-08-22_making_example/MorphoDynamicsPipe/conda_envs_yaml/morphody39.txt

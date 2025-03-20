@@ -1,0 +1,23 @@
+# conda version 25.5.1
+# mamba version 2.0.8
+# miniforge
+
+name: view3
+channels:
+  - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
+
+dependencies:
+  - python
+  - pip
+
+  - dask-image
+  - ipython
+  - napari=0.4.18
+  - natsort
+  - numpy
+  - pyqt
+  - scikit-image
+
+
+#  - pip:
