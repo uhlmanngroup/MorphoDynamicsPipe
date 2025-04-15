@@ -205,3 +205,5 @@ run.smk
 example/.DS_Store
 docker/OLD/
 conda_envs_yaml/btrack
+3b2_removals/
+3b2_corrections/

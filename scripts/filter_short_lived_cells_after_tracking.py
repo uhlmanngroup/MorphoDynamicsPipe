@@ -1,5 +1,5 @@
 #this file filters objects that do no last for a long time
-import os
+import os, re
 import skimage
 import numpy as np
 this_input = list(snakemake.input)
@@ -20,4 +20,19 @@ for each_id_in_current_image in ids_in_current_image:
             continue
     else:
         im[im == each_id_in_current_image] = 0
+
+# this part removes the entire object in the single time frame that at all overlaps with a correction labels
+# file handling not currently included in the snakemake because it should be a dependency
+correction_labels_name = re.sub('3b_tracking_images', '3b2_corrections', str(os.path.split(this_input[0])[0]))
+correction_labels_name = os.path.join(correction_labels_name, 'correction_labels.tif')
+print(correction_labels_name)
+if os.path.exists(correction_labels_name):
+    print('Activated')
+    correction_labels = skimage.io.imread(correction_labels_name)
+    correction_at_any_time = correction_labels == 1
+    uniques = np.unique(im[correction_at_any_time])
+    for each_unique in uniques:
+        im[im == each_unique] = 0
+
+# Save the filtered image
 skimage.io.imsave(this_output[0], im, check_contrast=False)
