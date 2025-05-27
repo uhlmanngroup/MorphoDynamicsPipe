@@ -12,12 +12,12 @@ After installing conda or mamba, clone this repository.
 
 Then navigate to the MorphoDynamicsPipe folder in a terminal or commmand prompt that has conda activated. 
 
-Then run `mamba env create -f conda_envs_yaml/environment_morphody40_dev.yml`
+Then run `mamba env create -f conda_envs_yaml/environment_morphody46_dev.yml`
 (mamba can also be replaced by conda here)
 
 then
 
-`conda activate morphody40`
+`conda activate morphody46`
 
 Other conda environments (such as for cellpose) will be installed automatically by snakemake in
 the default folder for your conda setup. These are currently called
@@ -45,7 +45,7 @@ Please change `windows_and_cpu_only = False` to `windows_and_cpu_only = True`.
 If you are not on Windows then you can ignore this step. 
 If you are on Windows but you have a GPU then you can ignore this step. 
 
-Then run `snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going` 
+Then run `snakemake -s run_example.smk --cores "all" --sdm conda --keep-going` 
 when in the MorphoDynamicsPipe folder.
 
 To change which algorithm is used for segmentation (default: cellpose), open the run_example.smk file, 

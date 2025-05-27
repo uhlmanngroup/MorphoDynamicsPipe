@@ -13,7 +13,16 @@ use_GPU = core.use_gpu()
 
 this_input = list(snakemake.input)
 this_output = list(snakemake.output)
-myparams = list(snakemake.params)[0]
+#myparams = list(snakemake.params)[0]
+
+myparams = {'model_type':'cyto3',
+    'restore_type':"denoise_cyto3",   #:None, 
+    'diameter':30.0, 
+    'flow_threshold':0.4, 
+    'cellprob_threshold':0, 
+    'normalize':{'percentile':[1, 99]},
+    'pretrained_model':'/example_file',
+    }
 
 im_celltracker = skimage.io.imread(this_input[0])
 im_nucs = skimage.io.imread(this_input[1])

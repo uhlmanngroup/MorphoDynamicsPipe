@@ -3,7 +3,7 @@
 # miniforge
 
 ## somehow this does not work with stardist.....
-name: morphody41
+name: morphody46
 channels:
 #  - defaults
   - conda-forge
@@ -17,6 +17,7 @@ dependencies:
   - aicsimageio
   - anndata
   - bioconda::snakemake
+  - bioconda::snakemake-interface-common
   
   - colour
 #  - conda-lock #could be useful in future
@@ -38,7 +39,7 @@ dependencies:
   # I think it was napari 0.4.19post1 that was the problem
   - napari-aicsimageio
   - natsort
-  - nd2
+  - nd2 #after installing this, the snakemake refused to see parameters from the snakemake file but removing it didn't fix it
   - notebook
   - numba
   - numpy

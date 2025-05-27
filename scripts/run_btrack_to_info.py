@@ -20,7 +20,12 @@ import pickle
 
 this_input = list(snakemake.input)
 this_output = snakemake.output[0]
-myparams = list(snakemake.params)[0]
+#myparams = list(snakemake.params)[0]
+myparams = {'properties': (), #'area',
+         'config_file': 'btrack_cell_config.json',
+         'optimize': True,
+        }
+
 print('This_input', this_input)
 
 #print("this_input is in the python file ", this_input)

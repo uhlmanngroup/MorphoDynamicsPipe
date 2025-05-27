@@ -1,9 +1,9 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
-# uses morphody40 conda environment
-# snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going
+# uses morphody46 conda environment
+# snakemake -s run_example.smk --cores "all" --sdm conda --keep-going
 # or on slurm
-# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --conda-frontend mamba --keep-going"
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --keep-going"
 # add --use-singularity to the above commands if you want to use singularity for btrack
 
 import os
@@ -170,15 +170,6 @@ rule segment_with_cellpose_nucs:
     retries: 10
     conda:
         cellpose_conda_env
-    params:
-        {'model_type':'cyto3',
-        'restore_type':"denoise_cyto3",   #:None, 
-        'diameter':30.0, 
-        'flow_threshold':0.4, 
-        'cellprob_threshold':0, 
-        'normalize':{'percentile':[1, 99]},
-        'pretrained_model':'/example_file',
-        }
     script:
         "scripts/run_cellpose_nucs.py"
 
@@ -192,15 +183,6 @@ rule segment_with_cellpose_nucs:
 #    retries: 10
 #    conda:
 #        cellpose_conda_env
-#    params:
-#        {'model_type':'cyto3',
-#        'restore_type':"denoise_cyto3",   #:None, 
-#        'diameter':30.0, 
-#        'flow_threshold':0.4, 
-#        'cellprob_threshold':0, 
-#        'normalize':{'percentile':[1, 99]},
-#        'pretrained_model':'/example_file',
-#        }
 #    script:
 #        "scripts/run_cellpose_celltracker_with_nucs.py"
 
@@ -245,11 +227,6 @@ rule track_with_btrack:
         get_segmentation_files_list_from_subfolder
     output:
         "3a_tracking_info/{subfolder}/track_info.npy"
-    params:
-        {'properties': ('area',),
-         'config_file': 'btrack_cell_config.json',
-         'optimize': True,
-        }
 #    container:
 #        "docker://spectralnanodiamond/btrack:latest"
 #        "../../2024-08-22_making_example/MorphoDynamicsPipe/.snakemake/singularity/443cbde37592944ef7c547806b1792f4.simg"
@@ -285,8 +262,6 @@ rule filter_cells_after_tracking:
         get_tracking_info_from_subfolderfilename,
     output:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
-    params:
-        number_of_frames_to_remove_object = 0
     script:
         "scripts/filter_short_lived_cells_after_tracking.py"
 
