@@ -61,6 +61,8 @@ and the `scripts/` folder (including its files) next to another `1_data`
 e.g. `project2/1_data/` , `project2/run_exmaple.smk` and `project2/scripts`. 
 Then at the command line, navigate to the project2 folder and run the snakemake command as above.
 
+Parameters can be changed in the python files themselves. 
+
 ## Results
 
 Segmentation and tracking results can be viewed in napari (installed with the conda environment) from folder `5_tracking_images_outlines/`.
