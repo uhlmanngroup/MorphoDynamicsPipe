@@ -266,6 +266,18 @@ rule filter_cells_after_tracking:
         "scripts/filter_short_lived_cells_after_tracking.py"
 
 
+#use this rule to create trivial tracking info without time course data
+#rule create_trivial_btrack_info:
+#    input:
+#        get_segmentation_files_list_from_subfolder
+#    output:
+#        "3a_tracking_info/{subfolder}/track_info.npy"
+#    container:
+#        "docker://spectralnanodiamond/btrack:latest"
+#        "../../2024-08-22_making_example/MorphoDynamicsPipe/.snakemake/singularity/443cbde37592944ef7c547806b1792f4.simg"
+#    script:
+#        "scripts/create_trivial_btrack_info.py"
+
 ####################################################################################################
 # Cell Morphodynamics
 

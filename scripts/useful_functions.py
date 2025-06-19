@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
+#This is the most up to date version of useful_functions.py
 """
 import math
 import numpy as np
@@ -1563,3 +1559,15 @@ def intlabels_and_rgblabels_to_dict(intlabels, rgblabels, list_to_ignore = [0], 
     for each in list_to_ignore:
         del int_to_rgb_dict[each]
     return int_to_rgb_dict
+
+def create_multichannel_color_image_from_channels(list_of_arrays, list_of_colormaps):
+    #list_of_arrays is floats from 0-1 or ints from 0-255
+    #list_of_colormaps is create from useful functions make_Ramp_flexible
+    #example code for bottomw limit
+    #im_cad2 = deepcopy(im_cad.astype(float) - 200)
+    #im_cad2[im_cad2 < 0.0] = 0 
+    output_image = np.zeros((list_of_arrays[0].shape[0], list_of_arrays[0].shape[1], 4), float)
+    for this_array, this_colormap in zip(list_of_arrays, list_of_colormaps):
+        output_image += this_colormap(this_array)
+    output_image[output_image > 1.0] = 1.0
+    return output_image
