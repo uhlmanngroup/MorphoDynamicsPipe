@@ -81,7 +81,7 @@ beautifulsoup4
 bfio
 bioformats_jar
 bleach
-bokeh
+bokeh>=3.7.3
 brotli
 build
 cached-property

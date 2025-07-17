@@ -41,4 +41,5 @@ mdurl
 microfilm
 mistune
 moviepy
-
+Cython
+# cyphon>=2.7

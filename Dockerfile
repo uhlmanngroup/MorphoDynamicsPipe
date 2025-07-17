@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS base
+FROM python:3.11-bookworm AS base
 
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
@@ -49,15 +49,16 @@ ENV PATH=/usr/local/cuda/bin:${PATH}
 # 4. Installer pip + requirements
 WORKDIR /app
 COPY requirements-base.txt .
-RUN pip install --upgrade pip && pip install -r requirements-base.txt
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip && pip install -r requirements-base.txt --upgrade --no-cache-dir
 
 FROM checkpoint-install-base AS checkpoint-install-dev
 COPY requirements-dev.txt .
-RUN pip install --upgrade pip && pip install -r requirements-dev.txt
+RUN pip install --upgrade pip && pip install -r requirements-dev.txt --upgrade --no-cache-dir
 
 FROM checkpoint-install-dev AS checkpoint-install-extended
 COPY requirements-extended.txt .
-RUN pip install --upgrade pip && pip install -r requirements-extended.txt
+RUN pip install --upgrade pip && pip install -r requirements-extended.txt --upgrade --no-cache-dir
 
 # FROM passing AS notpassing
 # COPY requirements_not_passing.txt .
