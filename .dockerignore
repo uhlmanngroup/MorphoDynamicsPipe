@@ -1,0 +1,6 @@
+.gitignore
+1_data/
+venv/
+*.log
+tests/
+*.pyc
