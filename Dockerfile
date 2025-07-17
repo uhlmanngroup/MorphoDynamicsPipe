@@ -42,19 +42,30 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. Définir les variables d'environnement CUDA
-FROM checkpoint-cuda AS passing
+FROM checkpoint-cuda AS checkpoint-install-base
 ENV PATH=/usr/local/cuda/bin:${PATH}
 # ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib:${LD_LIBRARY_PATH}
 
 # 4. Installer pip + requirements
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements-base.txt .
+RUN pip install --upgrade pip && pip install -r requirements-base.txt
 
-FROM passing AS notpassing
-COPY requirements_not_passing.txt .
-RUN pip install --upgrade pip && pip install -r requirements_not_passing.txt
+FROM checkpoint-install-base AS checkpoint-install-dev
+COPY requirements-dev.txt .
+RUN pip install --upgrade pip && pip install -r requirements-dev.txt
 
-FROM notpassing AS final
+FROM checkpoint-install-dev AS checkpoint-install-extended
+COPY requirements-extended.txt .
+RUN pip install --upgrade pip && pip install -r requirements-extended.txt
+
+# FROM passing AS notpassing
+# COPY requirements_not_passing.txt .
+# RUN pip install --upgrade pip && pip install -r requirements_not_passing.txt
+
+FROM checkpoint-install-extended AS verification
+RUN pip check
+
+FROM verification AS final
 # 5. Définir la commande par défaut
 CMD ["python3"]
