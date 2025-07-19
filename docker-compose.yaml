@@ -2,7 +2,7 @@ services:
   morphodys46:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: morphodys46:latest
-    container_name: morphodys46_container
+      dockerfile: ./docker/Dockerfile
+    # image: morphodys:latest
+    container_name: morphodys_container
     command: ["ls","-l"]

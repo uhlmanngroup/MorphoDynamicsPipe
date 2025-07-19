@@ -16,8 +16,8 @@
 # jupyter notebook --ip 0.0.0.0 --allow-root --no-browser
 # then http://127.0.0.1:8888 or http://localhost:8888/
 
-FROM ubuntu:22.04
-
+FROM ubuntu:22.04 AS base
+# FROM python:3.11-bookworm AS base
 ARG MINIFORGE_NAME=Miniforge3
 ARG MINIFORGE_VERSION=24.7.1-0
 ARG TARGETPLATFORM
@@ -37,6 +37,7 @@ ENV PATH=${CONDA_DIR}/bin:${PATH}
 #    for their interactive shells.
 # 6. Activate base by default when running as root as well
 #    The root user is already created, so won't pick up changes to /etc/skel
+FROM base AS miniforge-install
 RUN apt-get update > /dev/null && \
     apt-get install --no-install-recommends --yes \
         wget bzip2 ca-certificates \
@@ -58,11 +59,35 @@ RUN apt-get update > /dev/null && \
     conda clean --force-pkgs-dirs --all --yes  && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
-RUN mamba install -y python=3.11 matplotlib jupyterlab natsort jupyter notebook
-#pyqt napari-arboretum
-#pydantic=1.10.14 
-RUN pip install btrack
-#[napari]
+FROM miniforge-install AS checkpoint-cuda
 
-ENTRYPOINT ["tini", "--"]
+
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    apt update
+
+RUN apt-get update && apt-get install -y \
+    cuda-cudart-12-3 \
+    libcublas-12-3 \
+    libcusparse-12-3 \
+    libcusolver-12-3 \
+    # libcudnn8=8.9.*-1+cuda12.3 \
+    && rm -rf /var/lib/apt/lists/*
+    # RUN mamba install -y python=3.11 matplotlib jupyterlab natsort jupyter notebook
+COPY ./conda_envs_yaml/environment_morphody46_dev.yml ./conda_envs_yaml/environment_morphody46_dev.yml
+FROM checkpoint-cuda AS checkpoint-install-base-env
+#pyqt napari-arboretum
+#pydantic=1.10.14
+# COPY /conda_envs_yaml/environment_morphody46_dev.yml environment_morphody46_dev.yml
+
+RUN conda env create -f conda_envs_yaml/environment_morphody46_dev.yml && \
+    conda clean --all --yes
+RUN conda init bash && . ~/.bashrc && \
+    conda activate morphody46
+# RUN conda activate morphody46
+# echo "conda activate morphodys46" >> ~/.bashrc
+# RUN pip install btrack
+#[napari]
+FROM checkpoint-install-base-env AS final
+# ENTRYPOINT ["tini", "--"]
 CMD [ "/bin/bash" ]
