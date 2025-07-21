@@ -61,6 +61,8 @@ RUN apt-get update > /dev/null && \
     echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
 FROM miniforge-install AS checkpoint-cuda
 
+WORKDIR /app
+
 
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
@@ -74,7 +76,7 @@ RUN apt-get update && apt-get install -y \
     # libcudnn8=8.9.*-1+cuda12.3 \
     && rm -rf /var/lib/apt/lists/*
     # RUN mamba install -y python=3.11 matplotlib jupyterlab natsort jupyter notebook
-COPY ./conda_envs_yaml/environment_morphody46_dev.yml ./conda_envs_yaml/environment_morphody46_dev.yml
+COPY ./conda_envs_yaml/ ./conda_envs_yaml/
 FROM checkpoint-cuda AS checkpoint-install-base-env
 #pyqt napari-arboretum
 #pydantic=1.10.14
