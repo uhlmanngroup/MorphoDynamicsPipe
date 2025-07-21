@@ -5,4 +5,23 @@ services:
       dockerfile: ./docker/Dockerfile
     # image: morphodys:latest
     container_name: morphodys_container
-    command: ["ls","-l"]
+    volumes:
+      - ./1_data/:/data/1_data
+      - ./2_segmentation/:/data/2_segmentation
+      - ./3a_tracking_info/:/data/3a_tracking_info
+      - ./3b_tracking_images/:/data/3b_tracking_images
+      - ./3c_tracking_images_filtered/:/data/3c_tracking_images_filtered
+      - ./4a_instantaneous_cell_morphodynamics/:/data/4a_instantaneous_cell_morphodynamics
+      - ./4b_time_averaged_cell_morphodynamics/:/data/4b_time_averaged_cell_morphodynamics
+      - ./5_tracking_images_outlines/:/data/5_tracking_images_outlines
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    command: ["nvidia-smi"]
