@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+    image: jeanrodev/morphodynamicspipe:latest
     # image: morphodys:latest
     container_name: morphodys_container
     volumes:
@@ -14,6 +15,7 @@ services:
       - ./4a_instantaneous_cell_morphodynamics/:/data/4a_instantaneous_cell_morphodynamics
       - ./4b_time_averaged_cell_morphodynamics/:/data/4b_time_averaged_cell_morphodynamics
       - ./5_tracking_images_outlines/:/data/5_tracking_images_outlines
+    working_dir: /data
     deploy:
       resources:
         reservations:
@@ -24,4 +26,6 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    command: ["nvidia-smi"]
+    command: >
+      bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody46 && snakemake -s run_example.smk --cores all --sdm conda --keep-going"
+      # && ls -l && conda activate morphody46 &&  snakemake -s run_example.smk --cores all --sdm conda --keep-going"

@@ -88,3 +88,60 @@ simulated HL60 cells (from the Cell Tracking Challenge), Accession number BBBC03
 
 This package is part of the PLAST_CELL project. \
 More details on this are here: https://plastcell.eu/
+
+
+
+## Docker installation (FOR DEBIAN)
+
+To run this part you will need docker and the nvidia-docker toolkit
+
+### Docker
+
+```bash
+curl -fsSL https://get.docker.com -o install-docker.sh
+./install-docker.sh
+```
+
+
+Visit [text](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#with-apt-ubuntu-debian) for information on nvidia docker wrapper.
+
+### Configure the wrapper
+
+Update apt cache from sources
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sed -i -e '/experimental/ s/^#//g' /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+```
+
+Install the packages fetched
+
+```bash
+export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
+  sudo apt-get install -y \
+      nvidia-container-toolkit=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+      nvidia-container-toolkit-base=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+      libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+      libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
+
+```
+
+Update docker configuration
+
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+### Run/Build the image
+
+```bash
+docker compose up
+```
+
+to force build add ``--build`` to the command. It will pick up jobs left in the 1_data/ folder and post in the other number_folders/
