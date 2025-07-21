@@ -15,7 +15,7 @@ services:
       - ./4a_instantaneous_cell_morphodynamics/:/data/4a_instantaneous_cell_morphodynamics
       - ./4b_time_averaged_cell_morphodynamics/:/data/4b_time_averaged_cell_morphodynamics
       - ./5_tracking_images_outlines/:/data/5_tracking_images_outlines
-    working_dir: /data
+    working_dir: /app
     deploy:
       resources:
         reservations:
