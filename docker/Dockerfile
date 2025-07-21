@@ -89,5 +89,6 @@ RUN conda init bash && . ~/.bashrc && \
 # RUN pip install btrack
 #[napari]
 FROM checkpoint-install-base-env AS final
+COPY run_example.smk .
 # ENTRYPOINT ["tini", "--"]
-CMD [ "/bin/bash" ]
+CMD [ "/opt/conda/etc/profile.d/conda.sh" ]
