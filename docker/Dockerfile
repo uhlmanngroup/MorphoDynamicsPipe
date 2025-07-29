@@ -89,7 +89,19 @@ RUN conda init bash && . ~/.bashrc && \
 # echo "conda activate morphodys46" >> ~/.bashrc
 # RUN pip install btrack
 #[napari]
-FROM checkpoint-install-base-env AS final
+FROM checkpoint-install-base-env AS checkpoint-cellpose-env
+
+
+RUN conda env create -y -f conda_envs_yaml/environment_morphody_cellpose2_dev.yml && \
+    conda clean --all --yes
+RUN conda init bash && . ~/.bashrc
+
+FROM checkpoint-cellpose-env AS checkpoint-btrack-env
+
+RUN conda env create -y -f conda_envs_yaml/environment_morphody_btrack4_dev.yml && \
+    conda clean --all --yes
+RUN conda init bash && . ~/.bashrc
+
+FROM checkpoint-btrack-env AS final
 COPY run_example.smk /app/
-# ENTRYPOINT ["tini", "--"]
 CMD [ "/opt/conda/etc/profile.d/conda.sh" ]
