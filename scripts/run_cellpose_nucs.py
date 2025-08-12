@@ -45,9 +45,10 @@ im = skimage.io.imread(this_input[0])
 
 model = denoise.CellposeDenoiseModel(gpu=use_GPU, 
                                      model_type=myparams['model_type'],
-             restore_type=myparams['restore_type'], 
+                                     restore_type=myparams['restore_type'],
 ##                                     pretrained_model=myparams['pretrained_model'],
 )
+
 
 #model = denoise.CellposeDenoiseModel(gpu=use_GPU, 
 #                                     model_type=model_type,

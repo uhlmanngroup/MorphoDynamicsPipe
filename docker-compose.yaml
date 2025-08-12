@@ -26,6 +26,8 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    # command: >
+    #   bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody46 && snakemake -s run_example.smk --cores all --sdm conda --keep-going"
+    #   # && ls -l && conda activate morphody46 &&  snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"
     command: >
-      bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody46 && snakemake -s run_example.smk --cores all --sdm conda --keep-going"
-      # && ls -l && conda activate morphody46 &&  snakemake -s run_example.smk --cores all --sdm conda --keep-going"
+      bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody_minimal && snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"

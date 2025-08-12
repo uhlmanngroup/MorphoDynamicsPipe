@@ -73,7 +73,8 @@ RUN apt-get update && apt-get install -y \
     libcusparse-12-3 \
     libcusolver-12-3 \
     # libcudnn8=8.9.*-1+cuda12.3 \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf ./cuda-keyring_1.1-1_all.deb
     # RUN mamba install -y python=3.11 matplotlib jupyterlab natsort jupyter notebook
 COPY ./conda_envs_yaml/ /app/conda_envs_yaml/
 FROM checkpoint-cuda AS checkpoint-install-base-env
@@ -81,10 +82,10 @@ FROM checkpoint-cuda AS checkpoint-install-base-env
 #pydantic=1.10.14
 # COPY /conda_envs_yaml/environment_morphody46_dev.yml environment_morphody46_dev.yml
 
-RUN conda env create -f conda_envs_yaml/environment_morphody46_dev.yml && \
+RUN conda env create -f conda_envs_yaml/environment_minimal_dev.yml -v && \
     conda clean --all --yes
 RUN conda init bash && . ~/.bashrc && \
-    conda activate morphody46
+    conda activate morphody_minimal
 # RUN conda activate morphody46
 # echo "conda activate morphodys46" >> ~/.bashrc
 # RUN pip install btrack
@@ -92,16 +93,16 @@ RUN conda init bash && . ~/.bashrc && \
 FROM checkpoint-install-base-env AS checkpoint-cellpose-env
 
 
-RUN conda env create -y -f conda_envs_yaml/environment_morphody_cellpose2_dev.yml && \
-    conda clean --all --yes
-RUN conda init bash && . ~/.bashrc
+# RUN conda env create -y -f conda_envs_yaml/environment_morphody_cellpose2_dev.yml && \
+#     conda clean --all --yes
+# RUN conda init bash && . ~/.bashrc
 
 FROM checkpoint-cellpose-env AS checkpoint-btrack-env
 
-RUN conda env create -y -f conda_envs_yaml/environment_morphody_btrack4_dev.yml && \
-    conda clean --all --yes
-RUN conda init bash && . ~/.bashrc
+# RUN conda env create -y -f conda_envs_yaml/environment_morphody_btrack4_dev.yml && \
+#     conda clean --all --yes
+# RUN conda init bash && . ~/.bashrc
 
 FROM checkpoint-btrack-env AS final
-COPY run_example.smk /app/
+COPY minimal_run.smk /app/
 CMD [ "/opt/conda/etc/profile.d/conda.sh" ]
