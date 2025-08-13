@@ -2,19 +2,20 @@ services:
   morphodys46:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile_cuda_base
     image: jeanrodev/morphodynamicspipe:latest
     # image: morphodys:latest
     container_name: morphodys_container
     volumes:
-      - ./1_data/:/data/1_data
-      - ./2_segmentation/:/data/2_segmentation
-      - ./3a_tracking_info/:/data/3a_tracking_info
-      - ./3b_tracking_images/:/data/3b_tracking_images
-      - ./3c_tracking_images_filtered/:/data/3c_tracking_images_filtered
-      - ./4a_instantaneous_cell_morphodynamics/:/data/4a_instantaneous_cell_morphodynamics
-      - ./4b_time_averaged_cell_morphodynamics/:/data/4b_time_averaged_cell_morphodynamics
-      - ./5_tracking_images_outlines/:/data/5_tracking_images_outlines
+      - ./1_data/:/1_data
+      - ./2_segmentation/:/2_segmentation
+      - ./3a_tracking_info/:/3a_tracking_info
+      - ./3b_tracking_images/:/3b_tracking_images
+      - ./3c_tracking_images_filtered/:/3c_tracking_images_filtered
+      - ./4a_instantaneous_cell_morphodynamics/:/4a_instantaneous_cell_morphodynamics
+      - ./4b_time_averaged_cell_morphodynamics/:/4b_time_averaged_cell_morphodynamics
+      - ./5_tracking_images_outlines/:/5_tracking_images_outlines
+      - ./scripts/:/scipts
     working_dir: /app
     deploy:
       resources:
@@ -29,5 +30,7 @@ services:
     # command: >
     #   bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody46 && snakemake -s run_example.smk --cores all --sdm conda --keep-going"
     #   # && ls -l && conda activate morphody46 &&  snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"
+    # command: >
+    #   bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody_minimal && snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"
     command: >
-      bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody_minimal && snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"
+      bash -c "pwd && ls -l && . ./venv/bin/activate && python3 -c \"import torch;print(torch.cuda.is_available())\""
