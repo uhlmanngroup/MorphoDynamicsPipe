@@ -6,7 +6,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-rec
     && rm -rf /var/lib/apt/lists/*
 #RUN apt install -y snakemake
 FROM base AS venv_install
-RUN apt-get update && apt-get upgrade -y && apt-get install -y python3-venv && pip install --upgrade pip setuptools wheel && pip install --no-cache-dir snakemake && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y && apt-get install -y python3-venv && pip install --upgrade pip setuptools wheel && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv venv && . ./venv/bin/activate && pip install --no-cache-dir -r ./requirements.txt
 FROM venv_install AS final
 RUN apt clean && rm -rf /var/lib/apt/lists/*

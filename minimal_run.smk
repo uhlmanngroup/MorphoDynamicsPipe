@@ -6,10 +6,10 @@ import subprocess
 import torch
 print('My platform is: ', platform.system())
 #--------------------------------------------
-if "windows" in platform.system().lower():
-    windows_os = True
-if not torch.cuda.is_available():
-    cpu = True
+windows_os = "windows" in platform.system().lower()
+# windows_os = True
+cpu = not torch.cuda.is_available()
+# cpu = True
 windows_and_cpu_only = cpu and windows_os
 if windows_and_cpu_only:
     cellpose_conda_env = "morphody_cellposecpu0"
@@ -18,7 +18,7 @@ else:
 
 
 #--------------------------------------------
-Files
+# Files
 files = glob_wildcards("1_data/{subfolder_filename}.tif")
 both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
 both.subfolder
@@ -28,11 +28,11 @@ rule all:
     input:
     #commenting these lines in and out will control how many steps the pipeline performs
 #        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-#        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
+        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
 #        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+#         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+#         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
 def get_stabilization_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
@@ -62,10 +62,10 @@ rule segment_with_cellpose_nucs:
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
-    conda:
-        cellpose_conda_env
+    # conda:
+    #     cellpose_conda_env
     script:
-        "scripts/run_cellpose_nucs.py"
+        "scripts/run_cellpose_nucs_v4.py"
 
 # Tracking
 
@@ -107,8 +107,8 @@ rule track_with_btrack:
 #    container:
 #        "docker://spectralnanodiamond/btrack:latest"
 #        "../../2024-08-22_making_example/MorphoDynamicsPipe/.snakemake/singularity/443cbde37592944ef7c547806b1792f4.simg"
-    conda:
-        btrack_conda_env
+    # conda:
+    #     btrack_conda_env
     script:
         "scripts/run_btrack_to_info.py"
 

@@ -3,19 +3,21 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile_cuda_base
-    image: jeanrodev/morphodynamicspipe:latest
+    image: jeanrodev/morphodynamicspipe:dev
     # image: morphodys:latest
     container_name: morphodys_container
     volumes:
-      - ./1_data/:/1_data
-      - ./2_segmentation/:/2_segmentation
-      - ./3a_tracking_info/:/3a_tracking_info
-      - ./3b_tracking_images/:/3b_tracking_images
-      - ./3c_tracking_images_filtered/:/3c_tracking_images_filtered
-      - ./4a_instantaneous_cell_morphodynamics/:/4a_instantaneous_cell_morphodynamics
-      - ./4b_time_averaged_cell_morphodynamics/:/4b_time_averaged_cell_morphodynamics
-      - ./5_tracking_images_outlines/:/5_tracking_images_outlines
-      - ./scripts/:/scipts
+      - ./1_data/:/app/1_data
+      - ./2_segmentation/:/app/2_segmentation
+      - ./3a_tracking_info/:/app/3a_tracking_info
+      - ./3b_tracking_images/:/app/3b_tracking_images
+      - ./3c_tracking_images_filtered/:/app/3c_tracking_images_filtered
+      - ./4a_instantaneous_cell_morphodynamics/:/app/4a_instantaneous_cell_morphodynamics
+      - ./4b_time_averaged_cell_morphodynamics/:/app/4b_time_averaged_cell_morphodynamics
+      - ./5_tracking_images_outlines/:/app/5_tracking_images_outlines
+      - ./scripts/:/app/scripts
+      - ./requirements-base.txt:/app/requirements-base.txt:ro
+      - ./minimal_run.smk:/app/minimal_run.smk
     working_dir: /app
     deploy:
       resources:
@@ -33,4 +35,5 @@ services:
     # command: >
     #   bash -c "pwd && . /opt/conda/etc/profile.d/conda.sh && conda activate morphody_minimal && snakemake -s minimal_run.smk --cores all --sdm conda --keep-going"
     command: >
-      bash -c "pwd && ls -l && . ./venv/bin/activate && python3 -c \"import torch;print(torch.cuda.is_available())\""
+      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s minimal_run.smk --cores 1 --keep-going"
+    #" snakemake -s minimal_run.smk --cores all --keep-going"
