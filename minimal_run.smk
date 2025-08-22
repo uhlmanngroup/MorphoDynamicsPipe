@@ -27,12 +27,12 @@ both.filename
 rule all:
     input:
     #commenting these lines in and out will control how many steps the pipeline performs
-#        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
+        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
         expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-#        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-#        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-#         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-#         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
+        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
+        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
 
 def get_stabilization_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
@@ -129,4 +129,69 @@ rule filter_cells_after_tracking:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
     script:
         "scripts/filter_short_lived_cells_after_tracking.py"
+
+####################################################################################################
+# Cell Morphodynamics
+
+def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
+#    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
+    this_root_sub = "3c_tracking_images_filtered/" + wildcards.subfolder
+    list_of_segmented_images = [this_root_sub + '/' + each
+        for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
+    return list_of_segmented_images
+
+def get_images_files_list_from_subfolder(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
+    list_of_images = [this_original_sub + '/' + each
+        for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
+    return list_of_images
+
+def get_list_of_input_subfolders(wildcards):
+    list_of_subfolders = ['1_data/' + each for each in os.listdir('1_data') if os.path.isdir(os.path.join('1_data', each))]
+    return list_of_subfolders
+
+#####
+
+rule extract_instantaneous_cell_morphodynamics:
+    input:
+        "3a_tracking_info/{subfolder}/track_info.npy",
+        get_segmentation_relabeled_files_list_from_subfolder,
+        get_images_files_list_from_subfolder,
+    output:
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
+    retries: 2
+    script:
+        "scripts/extract_instantaneous_cell_morphodynamics.py"
+
+rule get_maximum_common_time:
+    input:
+        get_list_of_input_subfolders
+    output:
+        "maximum_common_time.txt"
+    script:
+        "scripts/get_maximum_common_time.py"
+
+
+rule extract_time_averaged_cell_morphodynamics:
+    input:
+        "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv",
+        "maximum_common_time.txt",
+        get_segmentation_relabeled_files_list_from_subfolder,
+    output:
+        "4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv"
+    script:
+        "scripts/extract_time_averaged_cell_morphodynamics.py"
+
+####################################################################################################
+# Visualization (optional)
+
+rule convert_to_label_outlines:
+    input:
+#        "3b_tracking_images/{subfolder_filename}.tif"
+        "3c_tracking_images_filtered/{subfolder_filename}.tif"
+    output:
+        '5_tracking_images_outlines/{subfolder_filename}.tif'
+    script:
+        "scripts/convert_to_label_outlines.py"
 

@@ -17,6 +17,7 @@ services:
       - ./scripts/:/app/scripts
       - ./requirements-base.txt:/app/requirements-base.txt:ro
       - ./minimal_run.smk:/app/minimal_run.smk
+      - ./btrack_cell_config.json:/app/btrack_cell_config.json
     working_dir: /app
     deploy:
       resources:
@@ -37,7 +38,7 @@ services:
     image: jeanrodev/morphodynamicspipe:latest
     container_name: morphodys_container
     volumes:
-      - ./1_data/:/app/1_data
+      - ./1_data/:/app/1_data:ro
       - ./2_segmentation/:/app/2_segmentation
       - ./3a_tracking_info/:/app/3a_tracking_info
       - ./3b_tracking_images/:/app/3b_tracking_images
@@ -48,6 +49,7 @@ services:
       - ./scripts/:/app/scripts
       - ./requirements-base.txt:/app/requirements-base.txt:ro
       - ./minimal_run.smk:/app/minimal_run.smk
+      - ./btrack_cell_config.json:/app/btrack_cell_config.json
     working_dir: /app
     # deploy:
     #   resources:

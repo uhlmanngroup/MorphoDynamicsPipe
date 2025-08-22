@@ -6,6 +6,11 @@ pandas==2.3.1
 matplotlib==3.9.4
 pulp<=2.7
 snakemake
+pystackreg==0.2.8
+btrack==0.6.5
+numba==0.61.2
+napari
+magicgui
 # This line is the fix:
 --extra-index-url https://download.pytorch.org/whl/cu121
 
