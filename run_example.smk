@@ -11,6 +11,7 @@ import natsort
 import re
 import platform
 import subprocess
+from src.utils import get_gpu_chunks
 print('My platform is: ', platform.system())
 
 # this next line should be modified to True if you are using windows and CPU only
@@ -168,6 +169,7 @@ rule segment_with_cellpose_nucs:
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
+    threads: min(get_gpu_chunks(),workflow.cores)
     conda:
         cellpose_conda_env
     script:
