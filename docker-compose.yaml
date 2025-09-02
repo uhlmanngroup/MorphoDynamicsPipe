@@ -34,7 +34,7 @@ services:
   morphodys46-cpu:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile_cuda_base
+      dockerfile: ./docker/Dockerfile
     image: jeanrodev/morphodynamicspipe:latest
     container_name: morphodys_container
     volumes:
