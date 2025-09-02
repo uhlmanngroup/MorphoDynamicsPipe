@@ -3,11 +3,10 @@ WORKDIR /app
 COPY ./requirements-base.txt /app/requirements.txt
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     python3 python3-pip python3-venv python3-dev git curl ca-certificates build-essential graphviz \
+    libgl1-mesa-dri xvfb libgles2-mesa libegl1-mesa \
     && rm -rf /var/lib/apt/lists/*
-#RUN apt install -y snakemake
 FROM base AS venv_install
 RUN apt-get update && apt-get upgrade -y && apt-get install -y python3-venv && pip install --upgrade pip setuptools wheel && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv venv && . ./venv/bin/activate && pip install --no-cache-dir -r ./requirements.txt
 FROM venv_install AS final
 RUN apt clean && rm -rf /var/lib/apt/lists/*
-# FROM ve AS final
