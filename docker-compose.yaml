@@ -1,10 +1,10 @@
 services:
-  morphodys46:
+  morphody50:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     image: jeanrodev/morphodynamicspipe:latest
-    container_name: morphodys_container
+    container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data
       - ./2_segmentation/:/app/2_segmentation
@@ -16,7 +16,7 @@ services:
       - ./5_tracking_images_outlines/:/app/5_tracking_images_outlines
       - ./scripts/:/app/scripts
       - ./requirements-base.txt:/app/requirements-base.txt:ro
-      - ./minimal_run.smk:/app/minimal_run.smk
+      - ./run_example.smk:/app/run_example.smk
       - ./btrack_cell_config.json:/app/btrack_cell_config.json
     working_dir: /app
     deploy:
@@ -30,13 +30,13 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     command: >
-      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s minimal_run.smk --cores 1 --keep-going"
-  morphodys46-cpu:
+      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s run_example.smk --cores 4 --keep-going"
+  morphody50-cpu:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     image: jeanrodev/morphodynamicspipe:latest
-    container_name: morphodys_container
+    container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data:ro
       - ./2_segmentation/:/app/2_segmentation
@@ -48,7 +48,7 @@ services:
       - ./5_tracking_images_outlines/:/app/5_tracking_images_outlines
       - ./scripts/:/app/scripts
       - ./requirements-base.txt:/app/requirements-base.txt:ro
-      - ./minimal_run.smk:/app/minimal_run.smk
+      - ./run_example.smk:/app/run_example.smk
       - ./btrack_cell_config.json:/app/btrack_cell_config.json
     working_dir: /app
     # deploy:
@@ -62,4 +62,4 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     command: >
-      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s minimal_run.smk --cores 1 --keep-going"
+      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s run_example.smk --cores 4 --keep-going"

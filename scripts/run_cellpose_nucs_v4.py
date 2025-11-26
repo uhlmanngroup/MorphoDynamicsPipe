@@ -3,21 +3,34 @@ import numpy as np
 import time, os, sys
 from urllib.parse import urlparse
 import skimage.io
-# from snakemake import snakemake
 
-from urllib.parse import urlparse
+# Patch torch before importing Cellpose to avoid BFloat16 on MPS
+#import torch
+#try:
+#    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+#        # Map bfloat16 to float32 so .to(dtype) calls won't try to use bfloat16 on MPS
+#        if hasattr(torch, "bfloat16"):
+#            torch.bfloat16 = torch.float32
+##        try:
+#            torch.set_default_dtype(torch.float32)
+#        except Exception:
+#            pass
+#except Exception:
+#    pass
+
+# now import cellpose after the torch patch
 from cellpose import models, core, denoise, utils
 
 # logger_setup();
 
 use_GPU = core.use_gpu()
 
-# this_input = sys.argv[1]
-# this_output = sys.argv[2]
+this_input = sys.argv[1]
+this_output = sys.argv[2]
 
-this_input = list(snakemake.input)
+#this_input = list(snakemake.input)
 print(this_input)
-this_output = list(snakemake.output)
+#this_output = list(snakemake.output)
 
 my_params = {
     "model_type": "cyto3",
@@ -30,17 +43,7 @@ my_params = {
     "max_iteration": 250,
 }
 
-# help(snakemake)
-# myparams = list(snakemake.params)[0]
-# print(myparams)
-# myparams = snakemake.Params
-# print(snakemake.myparam0)
-# print(snakemake.params.myparam0)
-# print(snakemake.params['myparam0'])
-# print(params)
-
-
-im = skimage.io.imread(this_input[0])
+im = skimage.io.imread(this_input)
 
 # path_to_pretrained_model = os.path.abspath('../../2024-04-17_retrain_cellpose/
 # 2D_nuclei_confocal_no_preprocess/OLD_test/models/CP_20240422_135130')
@@ -64,5 +67,5 @@ labels, _, _= model.eval(
 )
 # labels, _, _, _ = model.eval(im, diameter=diameter, flow_threshold=flow_threshold, channels=[0, 0],
 #    cellprob_threshold=cellprob_threshold, normalize=normalize)
-skimage.io.imsave(this_output[0], labels, check_contrast=False)
+skimage.io.imsave(this_output, labels, check_contrast=False)
 # skimage.io.imsave(this_output[0], np.array([0]), check_contrast=False)

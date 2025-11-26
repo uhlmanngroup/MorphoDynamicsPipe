@@ -1,17 +1,16 @@
 import os, sys
 import numpy as np
 import btrack
-import os
-import pandas as pd
+#import os
+#import pandas as pd
 #from aicsimageio import AICSImage
-import matplotlib.pyplot as plt
-from tqdm import trange
+#import matplotlib.pyplot as plt
+#from tqdm import trange
 import skimage
-import numpy as np
 #from skimage.io import imread
 from glob import glob
 #import useful_functions as uf
-from functools import partial
+#from functools import partial
 #from btrack import datasets
 import pickle
 

@@ -1,9 +1,10 @@
 # This is a snakemake file to run the MorphoDynamicsPipe pipeline using the example data provided in the repository.
 # The example images must be copied to 1_data folder before running this pipeline.
-# uses morphody46 conda environment
-# snakemake -s run_example.smk --cores "all" --sdm conda --keep-going
+# uses morphody50 conda environment
+# snakemake -s run_example.smk --cores "all" --keep-going
+# snakemake -s run_example.smk --cores 4 --keep-going
 # or on slurm
-# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --sdm conda --keep-going"
+# sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --keep-going"
 # add --use-singularity to the above commands if you want to use singularity for btrack
 
 import os
@@ -12,56 +13,6 @@ import re
 import platform
 import subprocess
 print('My platform is: ', platform.system())
-
-# this next line should be modified to True if you are using windows and CPU only
-windows_and_cpu_only = False
-# see a few lines below for how this is used
-####################################################################################################
-#Setting environments to use
-list_of_conda_envs = subprocess.run('conda env list', shell=True, capture_output=True).stdout.decode().split('\n')
-names_of_conda_envs = ''.join(list_of_conda_envs)
-
-# Installing or setting the cellpose environment to use
-if windows_and_cpu_only:
-    cellpose_conda_env = "morphody_cellposecpu0"
-    if 'morphody_cellposecpu0' not in names_of_conda_envs:
-        print('Creating morphody_cellposecpu0 environment')
-        try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
-        except:
-            print('Mamba unavailable, trying conda')
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellposecpu0_dev.yml', shell=True)
-else:
-    cellpose_conda_env = "morphody_cellpose2"
-    if 'morphody_cellpose2' not in names_of_conda_envs: 
-        print('Creating morphody_cellpose2 environment')
-        try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
-        except:
-            print('Mamba unavailable, trying conda')
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_cellpose2_dev.yml', shell=True)
-
-# Installing or setting the btrack environment to use
-# There is also a singularity environment that can be commented in below as an alternative
-if platform.system() == 'Windows' or platform.system() == 'Darwin':
-    print('In Windows or Mac options')
-    btrack_conda_env = "morphody_btrackpip0"
-    if 'morphody_btrackpip0' not in names_of_conda_envs:
-        print('Creating morphody_btrackpip0 environment')
-        try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
-        except:
-            print('Mamba unavailable, trying conda')
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrackpip0_dev.yml', shell=True)
-else:
-    btrack_conda_env = "morphody_btrack4"
-    if 'morphody_btrack4' not in names_of_conda_envs:
-        print('Creating morphody_btrack4 environment')
-        try:
-            subprocess.run('mamba env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
-        except:
-            print('Mamba unavailable, trying conda')
-            subprocess.run('conda env create -y -f conda_envs_yaml' + os.sep + 'environment_morphody_btrack4_dev.yml', shell=True)
 
 ####################################################################################################
 # Defining files to create
@@ -130,36 +81,7 @@ def get_equivalent_nuclear_segmentation(wildcards):
     return [new_fullpath]
 
 #####
-# comment in exactly one of the 4 following segmentation rules
-
-#rule segment_with_stardist:
-#    input:
-#        "1_data/{subfolder_filename}.tif"
-#    output:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    retries: 10
-#    conda:
-##       the line below automatically installs the conda environment for this rule
-#        "conda_envs_yaml/environment_stardist0_dev.yml"
-##      the line below should be alternatively commented in if you have the conda environment already installed
-##        "stardist0"
-#    script:
-#        "scripts/run_stardist.py"
-
-#rule segment_with_micro_sam:
-#    input:
-#        "1_data/{subfolder_filename}.tif",
-#        get_equivalent_nuclear_segmentation
-#    output:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    retries: 10
-#    conda:
-##       the line below automatically installs the conda environment for this rule
-#        "conda_envs_yaml/environment_microsam0_dev.yml"
-##      the line below should be alternatively commented in if you have the conda environment already installed
-##        "microsam0"
-#    script:
-#        "scripts/run_microsam.py"
+# comment in exactly one of the following segmentation rules
 
 # comment this in to run cellpose on a single channel, eg. celltracker alone
 rule segment_with_cellpose_nucs:
@@ -167,24 +89,10 @@ rule segment_with_cellpose_nucs:
         "1_data/{subfolder_filename}.tif",
     output:
         "2_segmentation/{subfolder_filename}.tif"
-    retries: 10
-    conda:
-        cellpose_conda_env
-    script:
-        "scripts/run_cellpose_nucs.py"
+    retries: 0
+    shell:
+        "python scripts/run_cellpose_nucs_v4.py {input} {output}"
 
-# comment this in to run cellpose on double channel, e.g. celltracker with nucs
-#rule segment_with_cellpose_celltracker_with_nucs:
-#    input:
-#        "1_data/{subfolder_filename}.tif",
-#        get_equivalent_nuclear_segmentation #this is the link to the nuclear channel
-#    output:
-#        "2_segmentation/{subfolder_filename}.tif"
-#    retries: 10
-#    conda:
-#        cellpose_conda_env
-#    script:
-#        "scripts/run_cellpose_celltracker_with_nucs.py"
 
 ####################################################################################################
 # Tracking
@@ -230,8 +138,8 @@ rule track_with_btrack:
 #    container:
 #        "docker://spectralnanodiamond/btrack:latest"
 #        "../../2024-08-22_making_example/MorphoDynamicsPipe/.snakemake/singularity/443cbde37592944ef7c547806b1792f4.simg"
-    conda:
-        btrack_conda_env
+#    conda:
+#        btrack_conda_env
     script:
         "scripts/run_btrack_to_info.py"
 

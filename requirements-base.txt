@@ -1,19 +1,19 @@
-numpy==1.26.3
-cellpose==4.0.6
-scikit-image
-scikit-learn==1.6.1
-pandas==2.3.1
-matplotlib==3.9.4
-pulp<=2.7
-snakemake
+# after mamba create -n morphody50 python==3.11.11 pip==25.3
+# mamba activate morphody50
+# pip install -r requirements-base.txt
+snakemake==9.13.7
+cellpose==4.0.7
+napari==0.6.6
+PyQt5==5.15.11
 pystackreg==0.2.8
-btrack==0.6.5
-numba==0.61.2
-napari
-magicgui
+dask-image==2025.11.0
+magicgui==0.10.1
+btrack==0.7.0
+moviepy==2.2.1
+numba==0.62.1
+matplotlib==3.10.7
+moviepy==2.2.1
+cp-measure==0.1.12
 # This line is the fix:
 --extra-index-url https://download.pytorch.org/whl/cu121
-
-torch==2.2.2
-torchvision
-torchaudio
+torch==2.8.0
