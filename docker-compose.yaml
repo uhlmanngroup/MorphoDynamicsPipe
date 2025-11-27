@@ -2,8 +2,8 @@ services:
   morphody50:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
-    image: jeanrodev/morphodynamicspipe:latest
+      dockerfile: ./docker/Dockerfile  
+    image: morphodynamicspipe:latest
     container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data
@@ -30,12 +30,12 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     command: >
-      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s run_example.smk --cores 4 --keep-going"
+      bash -c "pwd && ls -l && conda init && snakemake -s run_example.smk --cores 1 --keep-going"
   morphody50-cpu:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    image: jeanrodev/morphodynamicspipe:latest
+    image: morphodynamicspipe:latest
     container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data:ro
@@ -62,4 +62,4 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     command: >
-      bash -c "pwd && ls -l &&  . ./venv/bin/activate && snakemake -s run_example.smk --cores 4 --keep-going"
+      bash -c "pwd && ls -l && conda init && snakemake -s run_example.smk --cores 1 --keep-going"

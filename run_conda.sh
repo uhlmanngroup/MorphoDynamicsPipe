@@ -28,7 +28,7 @@ if command -v conda >/dev/null 2>&1; then
     snakemake -s run_example.smk --cores 4 --keep-going
   else
     echo "[INFO] Creating environment 'morphody50'..."
-    conda create -c conda-forge -c nodefaults -n morphody50 python==3.11.11 pip==25.3 -y
+    conda create -c conda-forge -c nodefaults -n morphody50 python==3.11.13 pip==25.1.1 -y
     conda activate morphody50
     pip install -r requirements-base.txt
     snakemake -s run_example.smk --cores 4 --keep-going

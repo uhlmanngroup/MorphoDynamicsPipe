@@ -1,4 +1,4 @@
-# after mamba create -n morphody50 python==3.11.13 pip==25.1.1
+# after mamba create -n morphody50 python==3.11.9 pip==24.2
 # mamba activate morphody50
 # pip install -r requirements-base.txt
 snakemake==9.13.7

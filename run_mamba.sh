@@ -28,7 +28,7 @@ if command -v mamba >/dev/null 2>&1; then
     fi
   else
     echo "[INFO] Creating environment 'morphody50'..."
-    mamba create -c conda-forge -c nodefaults -n morphody50 python==3.11.11 pip==25.3 -y
+    mamba create -c conda-forge -c nodefaults -n morphody50 python==3.11.13 pip==25.1.1 -y
     if [ "$SHELL_INITIALIZED" = true ]; then
       mamba activate morphody50
       pip install -r requirements-base.txt

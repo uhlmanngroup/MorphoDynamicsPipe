@@ -5,7 +5,7 @@ set -e
 
 # Check that docker CLI is available
 if ! command -v docker >/dev/null 2>&1; then
-  echo "[ERROR] Docker CLI not found. Please install Docker and ensure 'docker' is on your PATH."
+  echo "[ERROR] Docker CLI not found. Please install Docker and ensure 'docker' is installed and on your PATH."
   echo "[HINT] Installation: https://docs.docker.com/get-docker/"
   exit 1
 fi

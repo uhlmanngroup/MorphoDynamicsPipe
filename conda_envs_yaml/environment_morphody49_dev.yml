@@ -9,7 +9,7 @@ channels:
   - conda-forge
   - nodefaults #this is a channel that enforces avoidance of the defaults channel
 dependencies:
-  - python==3.11.11
+  - python==3.11.13
   - pip
 
   - bioconda::snakemake
