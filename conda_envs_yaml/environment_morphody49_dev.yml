@@ -1,0 +1,27 @@
+# mamba env create -f environment_morphody49_dev.yml
+# conda version 25.9.1
+# mamba version 2.3.3
+# miniforge
+
+## somehow this does not work with stardist.....
+name: morphody49
+channels:
+  - conda-forge
+  - nodefaults #this is a channel that enforces avoidance of the defaults channel
+dependencies:
+  - python==3.11.13
+  - pip
+
+  - bioconda::snakemake
+  - cellpose
+  - napari
+  - pyqt
+  - pystackreg
+  - dask-image
+  - magicgui
+  - matplotlib==3.10.7 #because pip doesn't seem to recognize 3.10.8?
+
+  - pip:
+    - btrack
+    - moviepy
+    - cp_measure

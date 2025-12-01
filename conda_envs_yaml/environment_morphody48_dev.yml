@@ -1,9 +1,9 @@
-# conda version 25.3.1
-# mamba version 2.1.1
+# conda version 25.9.1
+# mamba version 2.3.3
 # miniforge
 
 ## somehow this does not work with stardist.....
-name: morphody46
+name: morphody48
 channels:
 #  - defaults
   - conda-forge
@@ -18,7 +18,7 @@ dependencies:
   - anndata
   - bioconda::snakemake
   - bioconda::snakemake-interface-common
-  
+  - cellpose
   - colour
 #  - conda-lock #could be useful in future
 #  - conda-pack #could be useful in future
@@ -72,5 +72,6 @@ dependencies:
     - aicspylibczi
 #    - czitools #this package changes a lot of tools from the conda environment, so 
 #       if I need it I will have to solve for this later or put it in a different environment
+    - btrack
     - ipynb
     - lxml_html_clean

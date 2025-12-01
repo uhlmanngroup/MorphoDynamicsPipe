@@ -1,0 +1,65 @@
+services:
+  morphody50:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile  
+    image: spectralnanodiamond/morphodynamicspipe:latest
+    container_name: morphody_container
+    volumes:
+      - ./1_data/:/app/1_data
+      - ./2_segmentation/:/app/2_segmentation
+      - ./3a_tracking_info/:/app/3a_tracking_info
+      - ./3b_tracking_images/:/app/3b_tracking_images
+      - ./3c_tracking_images_filtered/:/app/3c_tracking_images_filtered
+      - ./4a_instantaneous_cell_morphodynamics/:/app/4a_instantaneous_cell_morphodynamics
+      - ./4b_time_averaged_cell_morphodynamics/:/app/4b_time_averaged_cell_morphodynamics
+      - ./5_tracking_images_outlines/:/app/5_tracking_images_outlines
+      - ./scripts/:/app/scripts
+      - ./requirements-base.txt:/app/requirements-base.txt:ro
+      - ./run_example.smk:/app/run_example.smk
+      - ./btrack_cell_config.json:/app/btrack_cell_config.json
+    working_dir: /app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    command: >
+      bash -c "pwd && ls -l && conda init && snakemake -s run_example.smk --cores 1 --keep-going"
+  morphody50-cpu:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: spectralnanodiamond/morphodynamicspipe:latest
+    container_name: morphody_container
+    volumes:
+      - ./1_data/:/app/1_data:ro
+      - ./2_segmentation/:/app/2_segmentation
+      - ./3a_tracking_info/:/app/3a_tracking_info
+      - ./3b_tracking_images/:/app/3b_tracking_images
+      - ./3c_tracking_images_filtered/:/app/3c_tracking_images_filtered
+      - ./4a_instantaneous_cell_morphodynamics/:/app/4a_instantaneous_cell_morphodynamics
+      - ./4b_time_averaged_cell_morphodynamics/:/app/4b_time_averaged_cell_morphodynamics
+      - ./5_tracking_images_outlines/:/app/5_tracking_images_outlines
+      - ./scripts/:/app/scripts
+      - ./requirements-base.txt:/app/requirements-base.txt:ro
+      - ./run_example.smk:/app/run_example.smk
+      - ./btrack_cell_config.json:/app/btrack_cell_config.json
+    working_dir: /app
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    command: >
+      bash -c "pwd && ls -l && conda init && snakemake -s run_example.smk --cores 1 --keep-going"

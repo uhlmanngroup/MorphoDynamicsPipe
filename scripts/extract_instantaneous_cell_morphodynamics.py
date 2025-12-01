@@ -7,7 +7,9 @@ import natsort
 from skimage.measure import label, regionprops, regionprops_table
 import math
 import scipy.ndimage as nd
-import scripts.cpda as cpda
+# print(dir(scripts))
+# import scripts.cpda as cpda
+import cpda as cpda
 from functools import partial
 
 def get_number_of_neighbors(i, labels, pixel_range):

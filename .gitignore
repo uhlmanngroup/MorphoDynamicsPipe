@@ -208,3 +208,4 @@ conda_envs_yaml/btrack
 3b2_removals/
 3b2_corrections/
 dcgm/*
+morphodynamicspipe.sif

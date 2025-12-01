@@ -5,7 +5,7 @@ import numpy as np
 import skimage
 from functools import partial
 #import useful_functions as uf
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from tqdm import tqdm, trange
 
 def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=str):
