@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile  
-    image: morphodynamicspipe:latest
+    image: spectralnanodiamond/morphodynamicspipe:latest
     container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    image: morphodynamicspipe:latest
+    image: spectralnanodiamond/morphodynamicspipe:latest
     container_name: morphody_container
     volumes:
       - ./1_data/:/app/1_data:ro

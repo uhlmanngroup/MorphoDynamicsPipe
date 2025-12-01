@@ -1,6 +1,12 @@
 #!/bin/bash
+#docker login
+#docker buildx create --use
+#docker buildx build --platform linux/amd64 -t spectralnanodiamond/morphodynamicspipe:latest --push .
+#docker build --platform linux/amd64 -t spectralnanodiamond/morphodynamicspipe -f docker/Dockerfile .
 #chmod +x run_docker.sh
 #source run_docker.sh
+#python -c "import torch; print(torch.__version__); print('CUDA:', torch.version.cuda); print('cuda available:', torch.cuda.is_available())"
+
 set -e
 
 # Check that docker CLI is available

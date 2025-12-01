@@ -2,7 +2,7 @@
 A library that uses snakemake to run a morphodynamics analysis on images of cells or nuclei. 
 It includes segmentation via cellpose and tracking via btrack. 
 MorphoDynamics features are calculated with scikit-image, CPDA chord measurement and other custom functions.
-MorphoDynamics can be run with Docker, mamba, conda or pip. MorphoDynamics requires an NVIDIA GPU or Apple Silicon to run the segmentation. If you have another segmention method you can provide the segmentations in the format shown in the example to skip this step. 
+MorphoDynamicsPipe can be run with Docker, Singularity, mamba, conda or pip. MorphoDynamicsPipe works on Linux, macOS Apple Silicon and Windows (using Windows Subsystem for Linux). MorphoDynamicsPipe requires an NVIDIA GPU or Apple Silicon to run the segmentation. If you have another segmention method you can provide the segmentations in the format shown in the example to skip this step. 
 
 ## Download the repository 
 Clone this github repository using
@@ -12,14 +12,14 @@ or alternatively click the 'Download Zip' button on this github page:
 
 <img src="conda_envs_yaml/download_image.png" width="50%" alt="Download Image">
 
-and then unzip the folder.
+and then unzip the folder.  
 
 Either method will create a folder called MorphoDynamicsPipe. This is where you will perform your analysis. 
 
 
 ## Data setup
-To run this for the first time, it is recommended to start with the exmaple data. An example dataset can be found in `MorphoDynamicsPipe/example/`.
-To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to `MorphoDynamicsPipe/1_data`, including the the subfolders and files. 
+To run this for the first time, it is recommended to start with the example data. An example dataset can be found in `MorphoDynamicsPipe/example/`.
+To run the example data, copy the folder `MorphoDynamicsPipe/example/1_data` to `MorphoDynamicsPipe/1_data`, including the subfolders and files. 
 
 To run on your own data, create a folder called `1_data` inside the main MorphoDynamicsPipe folder. 
 Put data in the in the format 
@@ -42,26 +42,49 @@ Then run as normal.
 ## Option 1: Execution using conda (or mamba) on Linux / macOS Apple Silicon
 1) Install conda (or mamba) using the instructions here:
 https://github.com/conda-forge/miniforge
-2) Then open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_conda.sh` (or `chmod +x run_mamba.sh`) to make the shell script executable. Then run `source run_conda.sh` (or `source run_mamba.sh`) to run the pipeline on the data. 
+2) Then open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_conda.sh` (or `chmod +x run_mamba.sh`) to make the shell script executable. Then run `source run_conda.sh` (or `source run_mamba.sh`) to create a conda environment (named morphodyXX) and run the pipeline on the data. 
 
-## Option 2: Execution using docker on Linux with NVIDIA GPU (NVIDIA drivers already installed)
-1) Install docker using the instructions here:
+You can change the conditions for running the snakemake (for example to run with different numbers of cores) by opening the `run_conda.sh` (or `run_mamba.sh`) script in a text editor such as Notepad or VSCode, and editing the command after snakemake. 
+Also, you may want to run the `bash` command before running the `run_conda.sh` (or `run_mamba.sh`) script so that you can view output even if it crashes.  This method does not currently work on Windows due to the lack of C++ compilers that are derived from build-essentials in the other operating systems. 
+
+## Option 2: Execution using Docker on Linux with an NVIDIA GPU 
+(Assuming NVIDIA drivers already installed, some notes on macOS also included in this section)
+1) Install docker. One option that is good for licences and is free is Rancher Desktop: 
+https://rancherdesktop.io/
+or follow the instructions here:
 https://docs.docker.com/engine/install/
-or
-https://docs.docker.com/desktop/
 2) Then open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_docker.sh` to make the shell script executable. Then run `source run_docker.sh` to run the pipeline on the data. 
-3) It is not recommended to run docker on Apple Silicon as it cannot access the Metal Performance Shader capabilities, meaning that cellpose 4 runs too slowly. This is also true on machines without a GPU. 
+3) It is not recommended to run Docker on Apple Silicon as it cannot access the Metal Performance Shader capabilities, meaning that Cellpose 4 runs too slowly. This is also true on machines without a GPU. If you do want to run the pipeline on Apple Silicon (if you already have segmentation through cellpose online, for example), you need to enable Rosetta. In Rancher Desktop this is in Preferences > Virtual Machine > VZ Option > Enable Rosetta Support. 
 
 ## Option 3: NVIDIA drivers not already installed on Linux (but NVIDIA GPU exists)
 See 'Docker installation' at the end of this page. 
 
-## Option 4: Execution using pip on any OS
-1) Create a virtual environment with python=3.11.11 and pip=25.3
-2) Activate the environment
-3) pip install -r requirements-base.txt
-4) snakemake -s run_example.smk --cores 4 --keep-going
+## Option 4: Execution using conda (or mamba) on Windows Subsystem for Linux inside Windows
+1) Install Windows Subsystem for Linux following the instructions here: 
+https://learn.microsoft.com/en-us/windows/wsl/install
+2) Launch wsl from the start menu to have a terminal that is running on Linux
+3) Install conda (and/or mamba), using the instructions for WSL so that conda (or mamba) will exist inside your Linux subsystem. Note that if you have conda (or mamba installed on Windows, this cannot be accessed by WSL) https://github.com/conda-forge/miniforge
+4) Run `sudo apt-get update` then `sudo apt-get upgrade -y` then `sudo apt-get install build-essential -y`
+5) Then open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_conda.sh` (or `chmod +x run_mamba.sh`) to make the shell script executable. Then run `source run_conda.sh` (or `source run_mamba.sh`) to run the pipeline on the data. 
 
-## Option 5: Execution using conda (or mamba) on Windows
+Also, you may want to run the `bash` command before running the `run_conda.sh` (or `run_mamba.sh`) script so that you can view output even if it crashes. 
+
+If files appear ending in :Zone.Identifier, delete these files before progressing using the following command: 
+`find . -name "*:Zone.Identifier" -type f -delete`
+
+## Option 5: Execution using Singularity on Linux
+(assuming Singularity is already installed, or the module is loaded)
+1) Open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_singularity.sh` to make the shell script executable. Then run `source run_singularity.sh` to run the pipeline on the data. 
+
+## Option 6: Execution using pip on Linux/macOS
+1) Create a virtual environment with python=3.11.13 and pip=25.1.1 (or similar)
+2) Activate the environment
+3) Run `pip install -r requirements-base.txt`
+4) Run `snakemake -s run_example.smk --cores 4 --keep-going`
+
+
+<!-- 
+## Option not available yet: Execution using conda (or mamba) on Windows
 1) Install conda (or mamba) using the instructions here:
 https://github.com/conda-forge/miniforge
 2) Then navigate in to the MorphoDynamicsPipe folder in a commmand prompt that has conda activated (such as miniforge prompt, which can be normally found on the start menu). 
@@ -69,13 +92,20 @@ https://github.com/conda-forge/miniforge
 4) Run `conda activate morphody50` (or `conda activate morphody50`)
 5) Run `pip install -r requirements-base.txt`
 6) Run `snakemake -s run_example.smk --cores 4 --keep-going`
+This currently does not work because it has trouble installing centomere)
 
+## Option not available yet: Execution using Docker on Windows with NVIDIA GPU (NVIDIA drivers already installed)
+1) Install Docker. One option that is good for licences and free is using: 
+https://rancherdesktop.io/
+or using the instructions here:
+https://docs.docker.com/engine/install/
+2) Then double click on batch script to run it (does not exist yet)) 
+-->
 
 ## Other notes
-If you would like to run the pipeline on another project, simply copy the `.smk` file 
-and the `scripts/` folder (including its files) next to another `1_data` 
-e.g. `project2/1_data/` , `project2/run_exmaple.smk` and `project2/scripts`. 
-Then at the command line, navigate to the project2 folder and run the snakemake command as above.
+If you would like to run the pipeline on another project, simply copy the `.smk` file, the run_*.sh file and the `scripts/` folder (including its files) next to another `1_data` 
+e.g. `project2/1_data/` , `project2/run_example.smk`, `project2/run_mamba.smk` and `project2/scripts`. 
+Then at the command line, navigate to the project2 folder and run the shell (.sh) command as above.
 
 Parameters can be changed in the python files themselves. 
 
