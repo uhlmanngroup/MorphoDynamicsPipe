@@ -68,7 +68,7 @@ def speeds_weighted(this_cell_data, cycleTime):
     speed_summaries = {}
     speeds = []
     myfuncs = [np.mean, np.std, np.min, np.max, np.median, scipy.stats.iqr]
-    this_cell_data_np = this_cell_data[['frame_id_T', 'centroid-0', 'centroid-1']].to_numpy()
+    this_cell_data_np = this_cell_data[['frame_id_T', 'Center_X', 'Center_Y']].to_numpy()
     try:
         for i in range(len(this_cell_data_np) - 1):
             displacement = this_cell_data_np[i+1, 1:3] - this_cell_data_np[i, 1:3]
@@ -76,13 +76,13 @@ def speeds_weighted(this_cell_data, cycleTime):
             time_steps = this_cell_data_np[i+1, 0] - this_cell_data_np[i, 0]
             speeds += [dist/(time_steps*cycleTime)]*int(time_steps)
             for each_func in myfuncs:
-                speed_summaries['speed2_' + each_func.__name__] = each_func(speeds)
+                speed_summaries['speed_v2_' + each_func.__name__] = each_func(speeds)
         if len(speed_summaries.keys()) == 0:
             for each_func in myfuncs:
-                speed_summaries['speed2_' + each_func.__name__] = -1
+                speed_summaries['speed_v2_' + each_func.__name__] = -1
     except:
         for each_func in myfuncs:
-            speed_summaries['speed2_' + each_func.__name__] = -1
+            speed_summaries['speed_v2_' + each_func.__name__] = -1
     return speed_summaries
 
 def time_span_properties(this_cell_data, cycleTime):
@@ -134,7 +134,7 @@ def get_area_from_segmentation(this_cell_seg):
 def get_summary_statistics(this_cell_data):
     columns = list(this_cell_data.columns)
     for each_remove in ['frame_id_T', 'realTime', 'frame_shape0', 'frame_shape1',
-                        'speed', 'speed_angle', 'N_frames_existence']:
+                        'N_frames_existence']:
         columns.remove(each_remove)
     summary_stats = {}
     for each_col in columns:
