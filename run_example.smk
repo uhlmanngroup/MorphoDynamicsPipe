@@ -5,7 +5,6 @@
 # snakemake -s run_example.smk --cores 4 --keep-going
 # or on slurm
 # sbatch -t 24:00:00 --mem=64G -c 16 --gres=gpu:1 --wrap="snakemake -s run_example.smk --cores "all" --keep-going"
-# add --use-singularity to the above commands if you want to use singularity for btrack
 
 import os
 import natsort
@@ -16,20 +15,24 @@ print('My platform is: ', platform.system())
 
 ####################################################################################################
 # Defining files to create
-files = glob_wildcards("1_data/{subfolder_filename}.tif")
-both = glob_wildcards("1_data/{subfolder}/{filename}.tif")
-both.subfolder
-both.filename
+files_wcs = glob_wildcards("1_data/{subfolder_filename}.tif")
+# filtered list (do not overwrite files_wcs attributes)
+files_subfolder_filenames = [f for f in files_wcs.subfolder_filename if not f.endswith(":Zone.Identifier")]
+
+both_wcs = glob_wildcards("1_data/{subfolder}/{filename}.tif")
+both_subfolders = [f for f in both_wcs.subfolder if not f.endswith(":Zone.Identifier")]
+both_filenames = [f for f in both_wcs.filename if not f.endswith(":Zone.Identifier")]
+# (use files_subfolder_filenames, both_subfolders, both_filenames below)
 
 rule all:
     input:
     #commenting these lines in and out will control how many steps the pipeline performs
-        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename),
-        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both.subfolder),
-        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files.subfolder_filename)
+        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
+        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
+        expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames)
 
 ####################################################################################################
 # Preprocessing
