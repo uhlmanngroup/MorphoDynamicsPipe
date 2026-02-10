@@ -75,6 +75,7 @@ If files appear ending in :Zone.Identifier, delete these files before progressin
 ## Option 5: Execution using Singularity on Linux
 (assuming Singularity is already installed, or the module is loaded)
 1) Open a terminal and navigate to the MorphoDynamicsPipe folder that you have downloaded. After opening this folder, run `chmod +x run_singularity.sh` to make the shell script executable. Then run `source run_singularity.sh` to run the pipeline on the data. 
+2) Alternatively, if using a SLURM High Performance Computing system, use the command: `sbatch -t 24:00:00 --mem=128G -c 16 --gres=gpu:1 --wrap="source ./run_singularity.sh"`. It should be possible to use equivalent commands on other job scheduling systems.
 
 ## Option 6: Execution using pip on Linux/macOS
 1) Create a virtual environment with python=3.11.13 and pip=25.1.1 (or similar)

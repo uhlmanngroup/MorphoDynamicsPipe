@@ -27,11 +27,11 @@ both_filenames = [f for f in both_wcs.filename if not f.endswith(":Zone.Identifi
 rule all:
     input:
     #commenting these lines in and out will control how many steps the pipeline performs
-        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
-        expand("3a_tracking_info/{subfolder}/track_info.npy", subfolder = both_subfolders),
-        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
-        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
-        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
+#        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+#        expand("3a_tracking_info/{subfolder}/track_info.npy", subfolder = both_subfolders),
+#        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+#        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
+#        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
         expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames)
 
