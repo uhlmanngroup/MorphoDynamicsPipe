@@ -93,7 +93,9 @@ rule segment_with_cellpose_nucs:
         "1_data/{subfolder_filename}.tif",
     output:
         "2_segmentation/{subfolder_filename}.tif"
-    retries: 0
+    retries: 10
+    resources:
+        cellpose_jobs=1
     shell:
         "python scripts/run_cellpose_nucs_v4.py {input} {output}"
 

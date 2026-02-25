@@ -51,6 +51,20 @@ for dir in "${DIRS[@]}"; do
   fi
 done
 
+# Fix permissions on .snakemake directory to ensure Snakemake can write metadata files
+# This is necessary when running on NFS mounts with potential permission restrictions
+echo "[INFO] Fixing permissions on .snakemake directory..."
+chmod -R u+rwX .snakemake 2>/dev/null || true
+if [ ! -w .snakemake ]; then
+  echo "[WARNING] .snakemake directory may not be writable. Attempting to use temp directory for Snakemake cache."
+  SNAKEMAKE_CACHEDIR_FLAG="--cache-dir=/tmp/.snakemake"
+else
+  SNAKEMAKE_CACHEDIR_FLAG=""
+fi
+
+echo "[INFO] Fixing permissions on maximum_common_time.txt..."
+chmod u+rwX maximum_common_time.txt 2>/dev/null || true
+
 # Create maximum_common_time.txt if it doesn't exist
 if [ ! -f "maximum_common_time.txt" ]; then
   echo "[INFO] Creating file: maximum_common_time.txt"
@@ -58,19 +72,9 @@ if [ ! -f "maximum_common_time.txt" ]; then
 fi
 
 # Run singularity with bind mounts (equivalent to docker volumes)
+# Mount the entire current directory to /app
 echo "[INFO] Starting singularity container..."
-singularity run $GPU_FLAG -B ./1_data:/app/1_data \
-  -B ./2_segmentation:/app/2_segmentation \
-  -B ./3a_tracking_info:/app/3a_tracking_info \
-  -B ./3b_tracking_images:/app/3b_tracking_images \
-  -B ./3c_tracking_images_filtered:/app/3c_tracking_images_filtered \
-  -B ./4a_instantaneous_cell_morphodynamics:/app/4a_instantaneous_cell_morphodynamics \
-  -B ./4b_time_averaged_cell_morphodynamics:/app/4b_time_averaged_cell_morphodynamics \
-  -B ./5_tracking_images_outlines:/app/5_tracking_images_outlines \
-  -B ./scripts:/app/scripts \
-  -B ./run_example.smk:/app/run_example.smk \
-  -B ./btrack_cell_config.json:/app/btrack_cell_config.json \
-  -B ./.snakemake:/app/.snakemake \
-  -B ./maximum_common_time.txt:/app/maximum_common_time.txt \
-  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run_example.smk --cores 4 --keep-going"
+singularity run $GPU_FLAG -B .:/app \
+  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run.smk --cores 48 --keep-going --resources cellpose_jobs=16 --rerun-incomplete $SNAKEMAKE_CACHEDIR_FLAG"
 
+#$SNAKEMAKE_CACHEDIR_FLAG
