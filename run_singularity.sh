@@ -75,6 +75,6 @@ fi
 # Mount the entire current directory to /app
 echo "[INFO] Starting singularity container..."
 singularity run $GPU_FLAG -B .:/app \
-  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run.smk --cores 48 --keep-going --resources cellpose_jobs=16 --rerun-incomplete $SNAKEMAKE_CACHEDIR_FLAG"
+  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run_example.smk --cores 48 --keep-going --resources cellpose_jobs=16 --rerun-incomplete $SNAKEMAKE_CACHEDIR_FLAG"
 
 #$SNAKEMAKE_CACHEDIR_FLAG
