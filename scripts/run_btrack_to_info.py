@@ -23,6 +23,7 @@ this_output = snakemake.output[0]
 myparams = {'properties': (), #'area',
          'config_file': 'btrack_cell_config.json',
          'optimize': True,
+         'timeout': 3600000, # 1 hour in milliseconds
         }
 
 print('This_input', this_input)
@@ -59,7 +60,9 @@ with btrack.BayesianTracker() as tracker:
 
   # generate hypotheses and run the global optimizer
     if myparams['optimize']:
-      tracker.optimize()
+      # Set timeout to 120 seconds (120000 ms) to prevent long optimization runs
+      # Adjust tm_lim value in milliseconds as needed (e.g., 30000 for 30s, 300000 for 5min)
+      tracker.optimize(tm_lim=myparams['timeout'])
 #    tracker.optimize()
 
   # store the data in an HDF5 file
