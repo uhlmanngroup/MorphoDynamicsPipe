@@ -1,10 +1,12 @@
 #I want to create a shell script that does the same as the docker compose up commands and the dockerfile, but is a singularity command
 #singularity pull morphodynamicspipe.sif docker://spectralnanodiamond/morphodynamicspipe:latest
-#salloc -t 8:00:00 --mem=128G -c 16 --gres=gpu:1
-#sbatch -t 24:00:00 --mem=128G -c 16 --gres=gpu:1 --wrap="source ./run_singularity.sh"
+#salloc -t 8:00:00 --mem=256G -c 32 --gres=gpu:1
+#sbatch -t 24:00:00 --mem=256G -c 32 --gres=gpu:1 --wrap="source ./run_singularity.sh"
+#sbatch -t 24:00:00 --mem=256G -c 32 --wrap="source ./run_singularity.sh"
 #add run.smk to bind mounts and change snakemake command to use run.smk if necessary
 #singularity run -B ./1_data:/app/1_data   -B ./2_segmentation:/app/2_segmentation   -B ./3a_tracking_info:/app/3a_tracking_info   -B ./3b_tracking_images:/app/3b_tracking_images   -B ./3c_tracking_images_filtered:/app/3c_tracking_images_filtered   -B ./4a_instantaneous_cell_morphodynamics:/app/4a_instantaneous_cell_morphodynamics   -B ./4b_time_averaged_cell_morphodynamics:/app/4b_time_averaged_cell_morphodynamics   -B ./5_tracking_images_outlines:/app/5_tracking_images_outlines   -B ./scripts:/app/scripts   -B ./run_example.smk:/app/run_example.smk     -B ./run.smk:/app/run.smk   -B ./btrack_cell_config.json:/app/btrack_cell_config.json   -B ./.snakemake:/app/.snakemake   -B ./maximum_common_time.txt:/app/maximum_common_time.txt /nfs/research/uhlmann/bwoodhams/git/singularity/morphodynamicspipe.sif
 #--rerun-incomplete can solve some issues on the singularity runs where snakemake doesn't complete all steps in one go
+#reducing --resources cellpose_jobs=16 to a lower number can prevent CUDA out of memory errors when running on a GPU with less memory than the default 16 jobs
 
 #!/bin/bash
 # chmod +x run_singularity.sh
@@ -75,6 +77,7 @@ fi
 # Mount the entire current directory to /app
 echo "[INFO] Starting singularity container..."
 singularity run $GPU_FLAG -B .:/app \
-  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run_example.smk --cores 48 --keep-going --resources cellpose_jobs=16 --rerun-incomplete $SNAKEMAKE_CACHEDIR_FLAG"
+  "$SIF_FILE" bash -c "cd /app && pwd && ls -l && snakemake -s run_example.smk \
+  --cores 16 --keep-going --resources cellpose_jobs=16 --rerun-incomplete $SNAKEMAKE_CACHEDIR_FLAG"
 
 #$SNAKEMAKE_CACHEDIR_FLAG

@@ -147,27 +147,31 @@ def calculate_cpmeasure(pixels, masks):
 def is_on_edge2(this_image, df2, this_cellID):
     frame_shape0 = df2.loc[this_cellID, 'frame_shape0'].values[0]
     frame_shape1 = df2.loc[this_cellID, 'frame_shape1'].values[0]
-    bbox0 = df2.loc[this_cellID, 'BoundingBoxMinimum_X'].values[0]
-    bbox1 = df2.loc[this_cellID, 'BoundingBoxMinimum_Y'].values[0]
-    bbox2 = df2.loc[this_cellID, 'BoundingBoxMaximum_X'].values[0]
-    bbox3 = df2.loc[this_cellID, 'BoundingBoxMaximum_Y'].values[0]
+#    bbox0 = df2.loc[this_cellID, 'BoundingBoxMinimum_X'].values[0]
+#    bbox1 = df2.loc[this_cellID, 'BoundingBoxMinimum_Y'].values[0]
+#    bbox2 = df2.loc[this_cellID, 'BoundingBoxMaximum_X'].values[0]
+#    bbox3 = df2.loc[this_cellID, 'BoundingBoxMaximum_Y'].values[0]
+    bbox0 = df2.loc[this_cellID, 'BoundingBoxMinimum_Y'].values[0]
+    bbox1 = df2.loc[this_cellID, 'BoundingBoxMinimum_X'].values[0]
+    bbox2 = df2.loc[this_cellID, 'BoundingBoxMaximum_Y'].values[0]
+    bbox3 = df2.loc[this_cellID, 'BoundingBoxMaximum_X'].values[0]
     
-    margin = 20
+    margin = 50
     if bbox0 < margin:
         test_area = this_image[0:bbox0, bbox1:bbox3]
-        if np.all(test_area == 0):
+        if test_area.size == 0 or np.all(test_area == 0):
             return 1
     if bbox1 < margin:
         test_area = this_image[bbox0:bbox2, 0:bbox1]
-        if np.all(test_area == 0):
+        if test_area.size == 0 or np.all(test_area == 0):
             return 1
     if frame_shape0 - bbox2 < margin:
-        test_area = this_image[bbox2:, bbox1:bbox3]
-        if np.all(test_area == 0):
+        test_area = this_image[bbox2+1:, bbox1:bbox3]
+        if test_area.size == 0 or np.all(test_area == 0):
             return 1
     if frame_shape1 - bbox3 < margin:
-        test_area = this_image[bbox0:bbox2, bbox3:]
-        if np.all(test_area == 0):
+        test_area = this_image[bbox0:bbox2, bbox3+1:]
+        if test_area.size == 0 or np.all(test_area == 0):
             return 1
     return 0
 

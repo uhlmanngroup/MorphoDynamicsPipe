@@ -27,12 +27,14 @@ both_filenames = [f for f in both_wcs.filename if not f.endswith(":Zone.Identifi
 rule all:
     input:
     #commenting these lines in and out will control how many steps the pipeline performs
+#        expand("1b_stabilize/{subfolder}/image_stack.npy", subfolder = both_subfolders),   
+#        expand("1c_stabilize/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),         
 #        expand("2_segmentation/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
 #        expand("3a_tracking_info/{subfolder}/track_info.npy", subfolder = both_subfolders),
 #        expand("3b_tracking_images/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
 #        expand("3c_tracking_images_filtered/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames),
-#        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
-        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
+        expand("4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
+#        expand("4b_time_averaged_cell_morphodynamics/{subfolder}/cell_data.csv", subfolder = both_subfolders),
         expand("5_tracking_images_outlines/{subfolder_filename}.tif", subfolder_filename = files_subfolder_filenames)
 
 ####################################################################################################
@@ -47,20 +49,35 @@ def get_stabilization_files_list_from_subfolder(wildcards):
 
 def get_image_stack_from_subfolderfilename(wildcards):
     subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
-    image_stack = '1b_stabilize/', subfolder, '/image_stack.npy'
+    image_stack = '1b_stabilize/' + subfolder + '/image_stack.npy'
     return image_stack
+
+def get_equivalent_stabilization_function(wildcards):
+    subfolder = "1b_stabilize_functions/" + wildcards.subfolder
+    subfolder = re.sub('C=2', 'C=0', subfolder)
+    function_fpath = subfolder + '/image_stack.pkl'
+    return function_fpath
 
 #####
 
+#Either have this rule or the one below
 #rule stabilize_individuals_to_group:
 #    input:
 #        get_stabilization_files_list_from_subfolder
 #    output:
-#        "1b_stabilize/{subfolder}/{filename}.tif"
-#        ["1b_stabilize/{subfolder}/{filename}.txt".format(filename=filename) for filename in [each2 for each2 in os.listdir("1b_stabilize/{subfolder}/") if not each2.startswith('.')]]
 #        "1b_stabilize/{subfolder}/image_stack.npy"
 #    script:
 #        "scripts/run_pystackreg.py"
+
+#This one below uses the registration functions saved from the previous rule in another folder
+#rule stabilize_individuals_to_group_from_function:
+#    input:
+#        get_stabilization_files_list_from_subfolder,
+#        get_equivalent_stabilization_function,
+#    output:
+#        "1b_stabilize/{subfolder}/image_stack.npy"
+#    script:
+#        "scripts/run_pystackreg_from_function.py"
 
 #rule stabilize_group_back_to_individuals:
 #    input:
@@ -70,6 +87,8 @@ def get_image_stack_from_subfolderfilename(wildcards):
 #        "1c_stabilize/{subfolder_filename}.tif"
 #    script:
 #        "scripts/run_group_back_to_individuals.py"
+
+
     
 
 ####################################################################################################
@@ -91,6 +110,7 @@ def get_equivalent_nuclear_segmentation(wildcards):
 rule segment_with_cellpose_nucs:
     input:
         "1_data/{subfolder_filename}.tif",
+#        "1c_stabilize/{subfolder_filename}.tif"
     output:
         "2_segmentation/{subfolder_filename}.tif"
     retries: 10
@@ -209,6 +229,13 @@ def get_images_files_list_from_subfolder(wildcards):
         for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
     return list_of_images
 
+def get_images_files_list_from_subfolder_with_stabilize(wildcards):
+    this_original_sub = "1_data/" + wildcards.subfolder
+    this_root_sub = "1c_stabilize/" + wildcards.subfolder
+    list_of_images = [this_root_sub + '/' + each
+        for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
+    return list_of_images
+
 def get_list_of_input_subfolders(wildcards):
     list_of_subfolders = ['1_data/' + each for each in os.listdir('1_data') if os.path.isdir(os.path.join('1_data', each))]
     return list_of_subfolders
@@ -220,6 +247,7 @@ rule extract_instantaneous_cell_morphodynamics:
         "3a_tracking_info/{subfolder}/track_info.npy",
         get_segmentation_relabeled_files_list_from_subfolder,
         get_images_files_list_from_subfolder,
+#        get_images_files_list_from_subfolder_with_stabilize,
     output:
         "4a_instantaneous_cell_morphodynamics/{subfolder}/cell_data.csv"
     retries: 2

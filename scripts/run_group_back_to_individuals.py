@@ -25,10 +25,10 @@ def getvaluefromstringbest(folder, variable, preceding='_', ending='_', mydtype=
 this_input = list(snakemake.input)
 this_output = list(snakemake.output)
 
-print("this_input is in the python file ", this_input)
-print('type ', type(this_input))
+#print("this_input is in the python file ", this_input)
+#print('type ', type(this_input))
 
-print("this_output is in the python file ", this_output)
+#print("this_output is in the python file ", this_output)
 
 
 myarray = np.load(this_input[0], mmap_mode='r')

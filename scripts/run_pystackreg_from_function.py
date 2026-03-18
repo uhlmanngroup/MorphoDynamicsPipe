@@ -31,6 +31,9 @@ def normalize_frame_to_01(frame):
 this_input = list(snakemake.input)
 this_output = list(snakemake.output)
 
+function_file = this_input[-1]
+this_input = this_input[:-1]
+
 #print("this_input is in the python file ", this_input)
 #print('type ', type(this_input))
 
@@ -39,18 +42,19 @@ this_output = list(snakemake.output)
 get_T = partial(getvaluefromstringbest, variable='_T=', preceding = '', ending='.tif', mydtype=int)
 this_input.sort(key = get_T)
 #this_output.sort(key = get_T)
-#print(skimage.io.imread(this_input[0]).shape)
 
 image_stack = np.array([skimage.io.imread(each) for each in this_input])
-print(image_stack.shape)
+#print(image_stack.shape)
 
 if False: #normalizing to 0-1 before registration seems to help with the registration quality, but it is not strictly necessary
     image_stack = np.array([normalize_frame_to_01(frame) for frame in image_stack])
     print(image_stack.shape, image_stack.dtype)
 
-sr = StackReg(StackReg.TRANSLATION)
-out_previous = sr.register_transform_stack(image_stack, reference='previous')
-print(out_previous.shape)
+#sr = StackReg(StackReg.TRANSLATION)
+with open(function_file, 'rb') as f:
+    sr = pkl.load(f)
+out_previous = sr.transform_stack(image_stack)
+#print(out_previous.shape)
 #area_to_keep = np.all(out_previous != 0, axis=0)
 #print(area_to_keep.shape)
 #mytable = skimage.measure.regionprops_table(area_to_keep*1)
@@ -70,13 +74,6 @@ if image_stack.dtype == np.uint16:
     out_previous[out_previous < 0] = 0
     out_previous[out_previous > 65535] = 65535
     out_previous = out_previous.astype(image_stack.dtype)
-
-#This part saves the registration functions, which can be used to apply the same transformations to other channels
-if True:
-    function_fpath = this_output[0].replace('1b_stabilize', '1b_stabilize_functions').replace('image_stack.npy', 'image_stack.pkl')
-    print(function_fpath)
-    os.makedirs(os.path.split(function_fpath)[0], exist_ok=True)
-    pkl.dump(sr, open(function_fpath, 'wb'))
 
 np.save(this_output[0], out_previous)
 #np.save(this_output[0], cropped)
