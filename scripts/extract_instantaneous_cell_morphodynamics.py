@@ -134,10 +134,15 @@ def calculate_cpmeasure(pixels, masks):
 
     masks, fw, inv = skimage.segmentation.relabel_sequential(masks)
     measurements = get_core_measurements()
-
+    
     results = {}
     for name, v in measurements.items():
-        results = {**results, **v(masks, pixels)}
+        try:
+            results = {**results, **v(masks, pixels)}
+        except:
+            print(f"Warning: Error calculating {name}")
+            print('Masks unique:', np.unique(masks, return_counts=True))
+            continue
 
     df_results = pd.DataFrame(results)
     df_results.index = df_results.index + 1
@@ -192,6 +197,7 @@ for this_frame_id in unique_frame_ids:
         print("Error in frame ", this_frame_id)
         continue
     
+    print("Processing frame ", this_frame_id)
     df = pd.DataFrame(regionprops_table(this_frame, properties = ('label',), extra_properties=curvature_funcs))
     df.index = df['label']
     df2 = calculate_cpmeasure(this_image, this_frame)
