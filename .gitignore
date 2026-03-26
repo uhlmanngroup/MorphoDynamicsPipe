@@ -163,7 +163,7 @@ data/
 results/
 .snakemake/
 data2/
-2_segmentation/
+2_segmentation*/
 1_data/
 3_tracking/
 4_regionprops/
@@ -184,6 +184,7 @@ conda_envs_yaml/OLD/*
 1a*/
 1b*/
 1c*/
+1d*/
 img02.png
 img03.png
 img05.png

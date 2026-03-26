@@ -103,6 +103,15 @@ def get_equivalent_nuclear_segmentation(wildcards):
 #    print(new_fullpath)
     return [new_fullpath]
 
+def get_equivalent_nuclear_channel(wildcards):
+#    this_root_sub = os.path.abspath("../../2024-07-30_new_lifs_batch_nucs_slightly_broader_dataset/MorphoDynamicsPipe/1_data/")
+    this_root_sub = '1d_segmentation_assist/'
+    new_subfolder_filename = re.sub('C=2', 'C=0', wildcards.subfolder_filename)
+    new_fullpath = os.path.join(this_root_sub, new_subfolder_filename) + '.tif'
+    new_fullpath = new_fullpath.replace(os.sep, '/')
+#    print(new_fullpath)
+    return new_fullpath
+
 #####
 # comment in exactly one of the following segmentation rules
 
@@ -117,7 +126,21 @@ rule segment_with_cellpose_nucs:
     resources:
         cellpose_jobs=1
     shell:
-        "python scripts/run_cellpose_nucs_v4.py {input} {output}"
+        "python scripts/run_cellpose_v4.py {input} {output}"
+
+# comment this in to run cellpose on a multiple channels, eg. celltracker alone
+#rule segment_with_cellpose_nucs_with_assist:
+#    input:
+#        "1_data/{subfolder_filename}.tif",
+#        "1c_stabilize/{subfolder_filename}.tif",
+#        get_equivalent_nuclear_channel,
+#    output:
+#        "2_segmentation/{subfolder_filename}.tif"
+#    retries: 10
+#    resources:
+#        cellpose_jobs=1
+#    shell:
+#        "python scripts/run_cellpose_with_assist_v4.py {input} {output}"
 
 
 ####################################################################################################
@@ -138,8 +161,8 @@ def get_tracking_info_from_subfolderfilename(wildcards):
 def get_tracking_info_from_subfolderfilename_nuclei_version(wildcards):
     subfolder = os.path.split(os.path.split(wildcards.subfolder_filename)[0])[1]
     subfolder_renamed = re.sub('C=2', 'C=0', subfolder)
-    tracking_info_base_path = os.path.abspath('../../2024-07-30_new_lifs_batch_nucs_slightly_broader_dataset/MorphoDynamicsPipe/3a_tracking_info')
-#    tracking_info_base_path = os.path.abspath('3a_tracking_info')
+#    tracking_info_base_path = os.path.abspath('../../2024-07-30_new_lifs_batch_nucs_slightly_broader_dataset/MorphoDynamicsPipe/3a_tracking_info')
+    tracking_info_base_path = os.path.abspath('3a_tracking_info')
     tracking_info = os.path.join(tracking_info_base_path, subfolder_renamed, 'track_info.npy')
     tracking_info = tracking_info.replace(os.sep, '/')
     return tracking_info
@@ -147,8 +170,8 @@ def get_tracking_info_from_subfolderfilename_nuclei_version(wildcards):
 def get_tracking_info_from_subfolder_nuclei_version(wildcards):
     subfolder = wildcards.subfolder
     subfolder_renamed = re.sub('C=2', 'C=0', subfolder)
-    tracking_info_base_path = os.path.abspath('../../2024-07-30_new_lifs_batch_nucs_slightly_broader_dataset/MorphoDynamicsPipe/3a_tracking_info')
-#    tracking_info_base_path = os.path.abspath('3a_tracking_info')
+#    tracking_info_base_path = os.path.abspath('../../2024-07-30_new_lifs_batch_nucs_slightly_broader_dataset/MorphoDynamicsPipe/3a_tracking_info')
+    tracking_info_base_path = os.path.abspath('3a_tracking_info')
     tracking_info = os.path.join(tracking_info_base_path, subfolder_renamed, 'track_info.npy')
     tracking_info = tracking_info.replace(os.sep, '/')
     return tracking_info
@@ -184,7 +207,8 @@ rule track_with_btrack:
 rule convert_btrack_info_to_images:
     input:
         "2_segmentation/{subfolder_filename}.tif",
-        get_tracking_info_from_subfolderfilename
+        get_tracking_info_from_subfolderfilename,
+#        get_tracking_info_from_subfolderfilename_nuclei_version,
     output:
         "3b_tracking_images/{subfolder_filename}.tif"
     script:
@@ -194,6 +218,7 @@ rule filter_cells_after_tracking:
     input:
         "3b_tracking_images/{subfolder_filename}.tif",
         get_tracking_info_from_subfolderfilename,
+#        get_tracking_info_from_subfolderfilename_nuclei_version,
     output:
         "3c_tracking_images_filtered/{subfolder_filename}.tif"
     script:
@@ -217,6 +242,7 @@ rule filter_cells_after_tracking:
 
 def get_segmentation_relabeled_files_list_from_subfolder(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
+#    this_original_sub = "1c_stabilize/" + wildcards.subfolder
 #    this_root_sub = "3b_tracking_images/" + wildcards.subfolder
     this_root_sub = "3c_tracking_images_filtered/" + wildcards.subfolder
     list_of_segmented_images = [this_root_sub + '/' + each
@@ -231,6 +257,7 @@ def get_images_files_list_from_subfolder(wildcards):
 
 def get_images_files_list_from_subfolder_with_stabilize(wildcards):
     this_original_sub = "1_data/" + wildcards.subfolder
+#    this_original_sub = "1c_stabilize/" + wildcards.subfolder
     this_root_sub = "1c_stabilize/" + wildcards.subfolder
     list_of_images = [this_root_sub + '/' + each
         for each in natsort.natsorted([each2 for each2 in os.listdir(this_original_sub) if not each2.startswith('.')])]
@@ -244,7 +271,8 @@ def get_list_of_input_subfolders(wildcards):
 
 rule extract_instantaneous_cell_morphodynamics:
     input:
-        "3a_tracking_info/{subfolder}/track_info.npy",
+#        "3a_tracking_info/{subfolder}/track_info.npy",
+        get_tracking_info_from_subfolder_nuclei_version,
         get_segmentation_relabeled_files_list_from_subfolder,
         get_images_files_list_from_subfolder,
 #        get_images_files_list_from_subfolder_with_stabilize,
