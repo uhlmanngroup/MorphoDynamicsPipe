@@ -271,8 +271,8 @@ def get_list_of_input_subfolders(wildcards):
 
 rule extract_instantaneous_cell_morphodynamics:
     input:
-#        "3a_tracking_info/{subfolder}/track_info.npy",
-        get_tracking_info_from_subfolder_nuclei_version,
+        "3a_tracking_info/{subfolder}/track_info.npy",
+#        get_tracking_info_from_subfolder_nuclei_version,
         get_segmentation_relabeled_files_list_from_subfolder,
         get_images_files_list_from_subfolder,
 #        get_images_files_list_from_subfolder_with_stabilize,
